@@ -31,6 +31,7 @@ void ATutoJoueur::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	InputComponent->BindAction("AjoutObjet", IE_Pressed, this, &ATutoJoueur::AjoutObjet);
 	InputComponent->BindAction("SuppressionObjet", IE_Pressed, this, &ATutoJoueur::SuppressionObjet);
+	InputComponent->BindAction("Inventaire", IE_Pressed, this, &ATutoJoueur::ChangeInventoryState);
 
 }
 
@@ -56,5 +57,5 @@ int32 ATutoJoueur::GetNumberFromID(int32 TheID)
 			break;
 		}
 	}
-	return retour;}/* Add an Item in the inventory with the specific ID */void ATutoJoueur::AddItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number < NombreMaxItem)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite++;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't ADD Item with ID : " + FString::FromInt(TheID)));		}	}}/* Remove an Item in the inventory with the specific ID */void ATutoJoueur::RemoveItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number > 0)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite--;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't REMOVE Item with ID : " + FString::FromInt(TheID)));		}	}}void ATutoJoueur::AjoutObjet(){	AddItemWithID(0);}void ATutoJoueur::SuppressionObjet(){	RemoveItemWithID(0);}
+	return retour;}/* Add an Item in the inventory with the specific ID */void ATutoJoueur::AddItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number < NombreMaxItem)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite++;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't ADD Item with ID : " + FString::FromInt(TheID)));		}	}}/* Remove an Item in the inventory with the specific ID */void ATutoJoueur::RemoveItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number > 0)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite--;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't REMOVE Item with ID : " + FString::FromInt(TheID)));		}	}}void ATutoJoueur::AjoutObjet(){	AddItemWithID(0);}void ATutoJoueur::SuppressionObjet(){	RemoveItemWithID(0);}void ATutoJoueur::ChangeInventoryState(){	InventaireVisuel = !InventaireVisuel;}
 

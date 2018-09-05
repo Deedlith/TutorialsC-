@@ -35,6 +35,9 @@ public:
 
 	const int32 NombreMaxItem = 5;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	bool InventaireVisuel = false;
+
 	// Return the Number of Item From a specific ID
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	int32 GetNumberFromID(int32 TheID);
@@ -56,5 +59,8 @@ public:
 
 	UFUNCTION()
 	void SuppressionObjet();
+
+	UFUNCTION()
+	void ChangeInventoryState();
 	
 };
