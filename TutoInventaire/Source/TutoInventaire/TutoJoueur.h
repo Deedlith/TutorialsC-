@@ -50,5 +50,11 @@ public:
 	// Remove an Item in the inventory with the specific ID
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	void RemoveItemWithID(int32 TheID);
+
+	UFUNCTION()
+	void AjoutObjet();
+
+	UFUNCTION()
+	void SuppressionObjet();
 	
 };
