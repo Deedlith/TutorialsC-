@@ -7,6 +7,7 @@
 /* insert include here */
 #include "TutoDataBase.h"
 #include "Engine.h"
+#include "TutoItem.h"
 /* insert include here */
 #include "TutoJoueur.generated.h"
 
@@ -37,6 +38,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool InventaireVisuel = false;
+
+	//The item to pickup
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	AActor* ItemToPickUp;
 
 	// Return the Number of Item From a specific ID
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
@@ -70,4 +75,8 @@ public:
 	// Move the player right and left
 	UFUNCTION(BlueprintCallable, Category = "Move")
 	void MoveRight(float value);
+
+	//handles use
+	UFUNCTION()
+	void OnUse();
 };

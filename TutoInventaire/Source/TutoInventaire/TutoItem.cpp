@@ -13,7 +13,12 @@ ATutoItem::ATutoItem()
 
 ATutoItem::ATutoItem(const FObjectInitializer& ObjectInitializer)
 {
-
+	//Use a sphere as a simple collision representation
+	CollisionComp = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("SphereComp"));
+	CollisionComp->InitSphereRadius(100.0f);
+	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ATutoItem::OnBeginOverlap);
+	CollisionComp->OnComponentEndOverlap.AddDynamic(this, &ATutoItem::OnEndOverlap);
+	RootComponent = CollisionComp;
 }
 
 // Called when the game starts or when spawned
@@ -30,13 +35,28 @@ void ATutoItem::Tick(float DeltaTime)
 
 }
 
-void ATutoItem::OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
+void ATutoItem::OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
-
+	auto MyPC = Cast<ATutoJoueur>(OtherActor);
+	if (MyPC)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player ENTER !!!!"));
+		}
+		MyPC->ItemToPickUp = this;
+	}
 }
 
-void ATutoItem::OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void ATutoItem::OnEndOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-
+	auto MyPC = Cast<ATutoJoueur>(OtherActor);
+	if (MyPC)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player EXIT !!!!"));
+		}
+		MyPC->ItemToPickUp = nullptr;
+	}
 }

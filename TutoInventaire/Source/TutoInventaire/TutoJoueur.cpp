@@ -32,6 +32,7 @@ void ATutoJoueur::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComponent->BindAction("AddObject", IE_Pressed, this, &ATutoJoueur::AddObject);
 	InputComponent->BindAction("RemoveObject", IE_Pressed, this, &ATutoJoueur::RemoveObject);
 	InputComponent->BindAction("Inventaire", IE_Pressed, this, &ATutoJoueur::ChangeInventoryState);
+	InputComponent->BindAction("Action", IE_Pressed, this, &ATutoJoueur::OnUse);
 
 	InputComponent->BindAxis("Forward", this, &ATutoJoueur::MoveForward);
 	InputComponent->BindAxis("Right", this, &ATutoJoueur::MoveRight);
@@ -52,7 +53,11 @@ int32 ATutoJoueur::GetNumberFromID(int32 TheID)
 		}
 	}
 	return retour;
-}/* Return the Index of Item from a specific ID */int32 ATutoJoueur::GetItemIndexWithID(int32 TheID){	int32 retour = -1;
+}
+/* Return the Index of Item from a specific ID */
+int32 ATutoJoueur::GetItemIndexWithID(int32 TheID)
+{
+	int32 retour = -1;
 	for (int32 index = 0; index < Inventaire.Num(); index++)
 	{
 		if (Inventaire[index].ID == TheID)
@@ -61,7 +66,61 @@ int32 ATutoJoueur::GetNumberFromID(int32 TheID)
 			break;
 		}
 	}
-	return retour;}/* Add an Item in the inventory with the specific ID */void ATutoJoueur::AddItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number < NumberMaxItem)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite++;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't ADD Item with ID : " + FString::FromInt(TheID)));		}	}}/* Remove an Item in the inventory with the specific ID */void ATutoJoueur::RemoveItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number > 0)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite--;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't REMOVE Item with ID : " + FString::FromInt(TheID)));		}	}}void ATutoJoueur::AddObject(){	AddItemWithID(0);}void ATutoJoueur::RemoveObject(){	RemoveItemWithID(0);}void ATutoJoueur::ChangeInventoryState(){	InventaireVisuel = !InventaireVisuel;}// Move the player forward and backward
+	return retour;
+}
+
+/* Add an Item in the inventory with the specific ID */
+void ATutoJoueur::AddItemWithID(int32 TheID)
+{
+	int32 Number = GetNumberFromID(TheID);
+	if (Number < NumberMaxItem)
+	{
+		int32 index = GetItemIndexWithID(TheID);
+		Inventaire[index].Quantite++;
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't ADD Item with ID : " + FString::FromInt(TheID)));
+		}
+	}
+}
+
+/* Remove an Item in the inventory with the specific ID */
+void ATutoJoueur::RemoveItemWithID(int32 TheID)
+{
+	int32 Number = GetNumberFromID(TheID);
+	if (Number > 0)
+	{
+		int32 index = GetItemIndexWithID(TheID);
+		Inventaire[index].Quantite--;
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't REMOVE Item with ID : " + FString::FromInt(TheID)));
+		}
+	}
+}
+
+void ATutoJoueur::AddObject()
+{
+	AddItemWithID(0);
+}
+
+void ATutoJoueur::RemoveObject()
+{
+	RemoveItemWithID(0);
+}
+
+void ATutoJoueur::ChangeInventoryState()
+{
+	InventaireVisuel = !InventaireVisuel;
+}
+
+// Move the player forward and backward
 void ATutoJoueur::MoveForward(float value)
 {
 	if ((Controller != NULL) && (value != 0.0f))
@@ -80,7 +139,9 @@ void ATutoJoueur::MoveForward(float value)
 }
 
 // Move the player right and left
-void ATutoJoueur::MoveRight(float value){	if ((Controller != NULL) && (value != 0.0f))
+void ATutoJoueur::MoveRight(float value)
+{
+	if ((Controller != NULL) && (value != 0.0f))
 	{
 		//Find out which way is forward
 		FRotator Rotation = Controller->GetControlRotation();
@@ -88,5 +149,55 @@ void ATutoJoueur::MoveRight(float value){	if ((Controller != NULL) && (value !
 		//Add Movement in that direction
 		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
 		AddMovementInput(Direction, value);
-	}}
+	}
+}
+
+void ATutoJoueur::OnUse()
+{
+
+	if (ItemToPickUp)
+	{
+		if(GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Picked Up !"));
+		}
+
+		//Cast Item
+		ATutoItem* CurrentItem = Cast<ATutoItem>(ItemToPickUp);
+		if (CurrentItem)
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, ID :" + FString::FromInt(CurrentItem->info.ID)));
+			}
+
+			//Get Index of Item Pick UP
+			int32 index = GetItemIndexWithID(CurrentItem->info.ID);
+
+			//Item doesn't exit add them to the Inventaire
+			if (index == -1)
+			{
+				FItem NewItem = CurrentItem->info;
+				int32 TheIndex = Inventaire.Add(NewItem);
+			}
+			//Item already exist, update the quantity
+			else
+			{
+				AddItemWithID(CurrentItem->info.ID);
+			}
+		}
+		else
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail to retreive infos"));
+			}
+		}
+		ItemToPickUp->Destroy();
+		ItemToPickUp = nullptr;
+	}
+}
+
+
+
 
