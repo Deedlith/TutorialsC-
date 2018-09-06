@@ -35,7 +35,8 @@ void ATutoJoueur::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	InputComponent->BindAxis("Forward", this, &ATutoJoueur::MoveForward);
 	InputComponent->BindAxis("Right", this, &ATutoJoueur::MoveRight);
-
+	InputComponent->BindAxis("TurnAtRate", this, &ATutoJoueur::AddControllerYawInput);
+	InputComponent->BindAxis("LookUpAtRate", this, &ATutoJoueur::AddControllerPitchInput);
 }
 
 // Return the Number of Item from a specific ID
