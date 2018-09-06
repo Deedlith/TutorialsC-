@@ -29,9 +29,12 @@ void ATutoJoueur::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	InputComponent->BindAction("AjoutObjet", IE_Pressed, this, &ATutoJoueur::AjoutObjet);
-	InputComponent->BindAction("SuppressionObjet", IE_Pressed, this, &ATutoJoueur::SuppressionObjet);
+	InputComponent->BindAction("AddObject", IE_Pressed, this, &ATutoJoueur::AddObject);
+	InputComponent->BindAction("RemoveObject", IE_Pressed, this, &ATutoJoueur::RemoveObject);
 	InputComponent->BindAction("Inventaire", IE_Pressed, this, &ATutoJoueur::ChangeInventoryState);
+
+	InputComponent->BindAxis("Forward", this, &ATutoJoueur::MoveForward);
+	InputComponent->BindAxis("Right", this, &ATutoJoueur::MoveRight);
 
 }
 
@@ -57,5 +60,32 @@ int32 ATutoJoueur::GetNumberFromID(int32 TheID)
 			break;
 		}
 	}
-	return retour;}/* Add an Item in the inventory with the specific ID */void ATutoJoueur::AddItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number < NombreMaxItem)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite++;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't ADD Item with ID : " + FString::FromInt(TheID)));		}	}}/* Remove an Item in the inventory with the specific ID */void ATutoJoueur::RemoveItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number > 0)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite--;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't REMOVE Item with ID : " + FString::FromInt(TheID)));		}	}}void ATutoJoueur::AjoutObjet(){	AddItemWithID(0);}void ATutoJoueur::SuppressionObjet(){	RemoveItemWithID(0);}void ATutoJoueur::ChangeInventoryState(){	InventaireVisuel = !InventaireVisuel;}
+	return retour;}/* Add an Item in the inventory with the specific ID */void ATutoJoueur::AddItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number < NumberMaxItem)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite++;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't ADD Item with ID : " + FString::FromInt(TheID)));		}	}}/* Remove an Item in the inventory with the specific ID */void ATutoJoueur::RemoveItemWithID(int32 TheID){	int32 Number = GetNumberFromID(TheID);	if (Number > 0)	{		int32 index = GetItemIndexWithID(TheID);		Inventaire[index].Quantite--;	}	else	{		if (GEngine)		{			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't REMOVE Item with ID : " + FString::FromInt(TheID)));		}	}}void ATutoJoueur::AddObject(){	AddItemWithID(0);}void ATutoJoueur::RemoveObject(){	RemoveItemWithID(0);}void ATutoJoueur::ChangeInventoryState(){	InventaireVisuel = !InventaireVisuel;}// Move the player forward and backward
+void ATutoJoueur::MoveForward(float value)
+{
+	if ((Controller != NULL) && (value != 0.0f))
+	{
+		//Find out which way is forward
+		FRotator Rotation = Controller->GetControlRotation();
+		//limit pitch when walking or falling
+		if (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling())
+		{
+			Rotation.Pitch = 0.0f;
+		}
+		//Add Movement in that direction
+		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
+		AddMovementInput(Direction, value);
+	}
+}
+
+// Move the player right and left
+void ATutoJoueur::MoveRight(float value){	if ((Controller != NULL) && (value != 0.0f))
+	{
+		//Find out which way is forward
+		FRotator Rotation = Controller->GetControlRotation();
+
+		//Add Movement in that direction
+		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
+		AddMovementInput(Direction, value);
+	}}
 

@@ -33,7 +33,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	TArray<FItem> Inventaire;
 
-	const int32 NombreMaxItem = 5;
+	const int32 NumberMaxItem = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool InventaireVisuel = false;
@@ -55,12 +55,19 @@ public:
 	void RemoveItemWithID(int32 TheID);
 
 	UFUNCTION()
-	void AjoutObjet();
+	void AddObject();
 
 	UFUNCTION()
-	void SuppressionObjet();
+	void RemoveObject();
 
 	UFUNCTION()
 	void ChangeInventoryState();
 	
+	// Move the player forward and backward
+	UFUNCTION(BlueprintCallable, Category = "Move")
+	void MoveForward(float value);
+
+	// Move the player right and left
+	UFUNCTION(BlueprintCallable, Category = "Move")
+	void MoveRight(float value);
 };
