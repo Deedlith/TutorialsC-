@@ -186,7 +186,8 @@ void ATutoJoueur::RemoveItemWithID(int32 TheID)
 
 void ATutoJoueur::AddObject()
 {
-	AddItemWithID(0);
+	AddItemWithID(3);
+	AddItemWithID(3);
 }
 
 void ATutoJoueur::RemoveObject()
@@ -239,47 +240,59 @@ void ATutoJoueur::MoveRight(float value)
 
 void ATutoJoueur::OnUse()
 {
-
-	if (ItemToPickUp)
+	if (InventaireVisuel)
 	{
-		if(GEngine)
+		bool nbItems = GetEnoughItem(indexCraft);
+		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Picked Up !"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, nbItems ? TEXT("true") : TEXT("false"));
 		}
-
-		//Cast Item
-		ATutoItem* CurrentItem = Cast<ATutoItem>(ItemToPickUp);
-		if (CurrentItem)
+		if (nbItems)
+			CraftItem(indexCraft);
+	}
+	else
+	{
+		if (ItemToPickUp)
 		{
 			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, ID :" + FString::FromInt(CurrentItem->info.ID)));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Picked Up !"));
 			}
 
-			//Get Index of Item Pick UP
-			int32 index = GetItemIndexWithID(CurrentItem->info.ID);
-
-			//Item doesn't exit add them to the Inventaire
-			if (index == -1)
+			//Cast Item
+			ATutoItem* CurrentItem = Cast<ATutoItem>(ItemToPickUp);
+			if (CurrentItem)
 			{
-				FItem NewItem = CurrentItem->info;
-				int32 TheIndex = Inventaire.Add(NewItem);
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, ID :" + FString::FromInt(CurrentItem->info.ID)));
+				}
+
+				//Get Index of Item Pick UP
+				int32 index = GetItemIndexWithID(CurrentItem->info.ID);
+
+				//Item doesn't exit add them to the Inventaire
+				if (index == -1)
+				{
+					FItem NewItem = CurrentItem->info;
+					int32 TheIndex = Inventaire.Add(NewItem);
+				}
+				//Item already exist, update the quantity
+				else
+				{
+					AddItemWithID(CurrentItem->info.ID);
+				}
 			}
-			//Item already exist, update the quantity
 			else
 			{
-				AddItemWithID(CurrentItem->info.ID);
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail to retreive infos"));
+				}
 			}
+			ItemToPickUp->Destroy();
+			ItemToPickUp = nullptr;
 		}
-		else
-		{
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail to retreive infos"));
-			}
-		}
-		ItemToPickUp->Destroy();
-		ItemToPickUp = nullptr;
 	}
 }
 
@@ -299,6 +312,45 @@ void ATutoJoueur::DownCraft()
 	}
 }
 
+bool ATutoJoueur::GetEnoughItem(int32 index)
+{
+	bool canCraft = true;
 
+	FCraft CurrentCraft = Craft[index];
+	for (int i = 0; i < CurrentCraft.Requirement.Num(); i++)
+	{
+		int32 NBItems = GetNumberFromID(CurrentCraft.Requirement[i].ID);
+		if (NBItems < CurrentCraft.Requirement[i].Quantity)
+		{
+			canCraft = false;
+			return canCraft;
+		}
+	}
+	return canCraft;
+}
+
+void ATutoJoueur::RemoveItemWithIDAndNumber(int32 TheID, int32 TheNumber) 
+{
+	int32 Number = GetNumberFromID(TheID);
+	if (Number - TheNumber > 0)
+	{
+		int32 index = GetItemIndexWithID(TheID);
+		Inventaire[index].Quantite -= TheNumber;
+	}
+	else
+	{
+		int32 index = GetItemIndexWithID(TheID);
+		Inventaire[index].Quantite = 0;
+	}
+}
+
+void ATutoJoueur::CraftItem(int32 index)
+{
+	Craft[index].Quantity++;
+	for (int32 i = 0; i < Craft[index].Requirement.Num(); i++)
+	{
+		RemoveItemWithIDAndNumber(Craft[index].Requirement[i].ID, Craft[index].Requirement[i].Quantity);
+	}
+}
 
 

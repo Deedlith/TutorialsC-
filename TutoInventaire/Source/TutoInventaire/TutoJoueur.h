@@ -93,6 +93,18 @@ public:
 	void UpCraft();
 
 	// GO DOWN in the crafting list
+	UFUNCTION()
 	void DownCraft();
+
+	// Check if we have all items to craft the selected item
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	bool GetEnoughItem(int32 index);
+
+	//Remove an item in the inventory with the specific ID and Number
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void RemoveItemWithIDAndNumber(int32 TheID, int32 TheNumber);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	void CraftItem(int32 index);
 
 };
