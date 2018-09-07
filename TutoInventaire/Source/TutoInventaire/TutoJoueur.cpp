@@ -8,6 +8,83 @@ ATutoJoueur::ATutoJoueur()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	NumberMaxItem = 5;
+
+	FCraft CurrentCraft;
+	FRequirement CurrentRequirement;
+
+	// Kit Soin
+	CurrentCraft.ID = 0;
+	CurrentCraft.Quantity = 0;
+	CurrentCraft.Name = "Kit Soin";
+	CurrentRequirement.ID = 0;
+	CurrentRequirement.Quantity = 1;
+	CurrentCraft.Requirement.Add(CurrentRequirement);
+	CurrentRequirement.ID = 2;
+	CurrentRequirement.Quantity = 1;
+	CurrentCraft.Requirement.Add(CurrentRequirement);
+
+	Craft.Add(CurrentCraft);
+
+	CurrentCraft.Requirement.Empty();
+
+	// Knife
+	CurrentCraft.ID = 1;
+	CurrentCraft.Quantity = 0;
+	CurrentCraft.Name = "Knife";
+	CurrentRequirement.ID = 4;
+	CurrentRequirement.Quantity = 1;
+	CurrentCraft.Requirement.Add(CurrentRequirement);
+	CurrentRequirement.ID = 5;
+	CurrentRequirement.Quantity = 1;
+	CurrentCraft.Requirement.Add(CurrentRequirement);
+	CurrentRequirement.ID = 1;
+	CurrentRequirement.Quantity = 1;
+	CurrentCraft.Requirement.Add(CurrentRequirement);
+
+	Craft.Add(CurrentCraft);
+
+	CurrentCraft.Requirement.Empty();
+
+	// Crochetage
+	CurrentCraft.ID = 2;
+	CurrentCraft.Quantity = 0;
+	CurrentCraft.Name = "Crochetage";
+	CurrentRequirement.ID = 1;
+	CurrentRequirement.Quantity = 2;
+	CurrentCraft.Requirement.Add(CurrentRequirement);
+
+	Craft.Add(CurrentCraft);
+
+	CurrentCraft.Requirement.Empty();
+
+	// Molotov
+	CurrentCraft.ID = 3;
+	CurrentCraft.Quantity = 0;
+	CurrentCraft.Name = "Molotov";
+	CurrentRequirement.ID = 2;
+	CurrentRequirement.Quantity = 1;
+	CurrentCraft.Requirement.Add(CurrentRequirement);
+	CurrentRequirement.ID = 3;
+	CurrentRequirement.Quantity = 1;
+	CurrentCraft.Requirement.Add(CurrentRequirement);
+
+	Craft.Add(CurrentCraft);
+
+	CurrentCraft.Requirement.Empty();
+
+	// Bandage
+	CurrentCraft.ID = 4;
+	CurrentCraft.Quantity = 0;
+	CurrentCraft.Name = "Bandage";
+	CurrentRequirement.ID = 3;
+	CurrentRequirement.Quantity = 2;
+	CurrentCraft.Requirement.Add(CurrentRequirement);
+
+	Craft.Add(CurrentCraft);
+
+	CurrentCraft.Requirement.Empty();
+
 }
 
 // Called when the game starts or when spawned
@@ -33,6 +110,8 @@ void ATutoJoueur::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComponent->BindAction("RemoveObject", IE_Pressed, this, &ATutoJoueur::RemoveObject);
 	InputComponent->BindAction("Inventaire", IE_Pressed, this, &ATutoJoueur::ChangeInventoryState);
 	InputComponent->BindAction("Action", IE_Pressed, this, &ATutoJoueur::OnUse);
+	InputComponent->BindAction("UpCraft", IE_Pressed, this, &ATutoJoueur::UpCraft);
+	InputComponent->BindAction("DownCraft", IE_Pressed, this, &ATutoJoueur::DownCraft);
 
 	InputComponent->BindAxis("Forward", this, &ATutoJoueur::MoveForward);
 	InputComponent->BindAxis("Right", this, &ATutoJoueur::MoveRight);
@@ -125,16 +204,19 @@ void ATutoJoueur::MoveForward(float value)
 {
 	if ((Controller != NULL) && (value != 0.0f))
 	{
-		//Find out which way is forward
-		FRotator Rotation = Controller->GetControlRotation();
-		//limit pitch when walking or falling
-		if (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling())
+		if (!InventaireVisuel)
 		{
-			Rotation.Pitch = 0.0f;
+			//Find out which way is forward
+			FRotator Rotation = Controller->GetControlRotation();
+			//limit pitch when walking or falling
+			if (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling())
+			{
+				Rotation.Pitch = 0.0f;
+			}
+			//Add Movement in that direction
+			const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
+			AddMovementInput(Direction, value);
 		}
-		//Add Movement in that direction
-		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
-		AddMovementInput(Direction, value);
 	}
 }
 
@@ -143,12 +225,15 @@ void ATutoJoueur::MoveRight(float value)
 {
 	if ((Controller != NULL) && (value != 0.0f))
 	{
-		//Find out which way is forward
-		FRotator Rotation = Controller->GetControlRotation();
+		if (!InventaireVisuel)
+		{
+			//Find out which way is forward
+			FRotator Rotation = Controller->GetControlRotation();
 
-		//Add Movement in that direction
-		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
-		AddMovementInput(Direction, value);
+			//Add Movement in that direction
+			const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
+			AddMovementInput(Direction, value);
+		}
 	}
 }
 
@@ -195,6 +280,22 @@ void ATutoJoueur::OnUse()
 		}
 		ItemToPickUp->Destroy();
 		ItemToPickUp = nullptr;
+	}
+}
+
+void ATutoJoueur::UpCraft()
+{
+	if (InventaireVisuel && indexCraft - 1 >= 0)
+	{
+		indexCraft--;
+	}
+}
+
+void ATutoJoueur::DownCraft()
+{
+	if (InventaireVisuel && indexCraft + 1 < Craft.Num())
+	{
+		indexCraft++;
 	}
 }
 

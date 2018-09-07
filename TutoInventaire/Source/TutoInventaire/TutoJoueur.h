@@ -8,6 +8,7 @@
 #include "TutoDataBase.h"
 #include "Engine.h"
 #include "TutoItem.h"
+#include "Data.h"
 /* insert include here */
 #include "TutoJoueur.generated.h"
 
@@ -34,7 +35,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	TArray<FItem> Inventaire;
 
-	const int32 NumberMaxItem = 5;
+	int32 NumberMaxItem = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool InventaireVisuel = false;
@@ -42,6 +43,13 @@ public:
 	//The item to pickup
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	AActor* ItemToPickUp;
+
+	//Array of crafting
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	TArray<FCraft> Craft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+	int32 indexCraft;
 
 	// Return the Number of Item From a specific ID
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
@@ -79,4 +87,12 @@ public:
 	//handles use
 	UFUNCTION()
 	void OnUse();
+
+	// Go UP in the crafting list
+	UFUNCTION()
+	void UpCraft();
+
+	// GO DOWN in the crafting list
+	void DownCraft();
+
 };
