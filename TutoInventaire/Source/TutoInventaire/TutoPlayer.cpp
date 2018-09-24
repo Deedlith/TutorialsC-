@@ -109,7 +109,7 @@ void ATutoPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	InputComponent->BindAction("AddObject", IE_Pressed, this, &ATutoPlayer::AddObject);
 	InputComponent->BindAction("RemoveObject", IE_Pressed, this, &ATutoPlayer::RemoveObject);
-	InputComponent->BindAction("Inventaire", IE_Pressed, this, &ATutoPlayer::ChangeInventoryState);
+	InputComponent->BindAction("Inventory", IE_Pressed, this, &ATutoPlayer::ChangeInventoryState);
 	InputComponent->BindAction("Action", IE_Pressed, this, &ATutoPlayer::OnUse);
 	InputComponent->BindAction("UpCraft", IE_Pressed, this, &ATutoPlayer::UpCraft);
 	InputComponent->BindAction("DownCraft", IE_Pressed, this, &ATutoPlayer::DownCraft);

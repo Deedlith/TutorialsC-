@@ -37,7 +37,7 @@ void ATutoItem::Tick(float DeltaTime)
 
 void ATutoItem::OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto MyPC = Cast<ATutoJoueur>(OtherActor);
+	auto MyPC = Cast<ATutoPlayer>(OtherActor);
 	if (MyPC)
 	{
 		if (GEngine)
@@ -50,7 +50,7 @@ void ATutoItem::OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class 
 
 void ATutoItem::OnEndOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	auto MyPC = Cast<ATutoJoueur>(OtherActor);
+	auto MyPC = Cast<ATutoPlayer>(OtherActor);
 	if (MyPC)
 	{
 		if (GEngine)

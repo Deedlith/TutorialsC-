@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "TutoDataBase.h"
-#include "TutoJoueur.h"
+#include "TutoPlayer.h"
 #include "TutoItem.generated.h"
 
 UCLASS()

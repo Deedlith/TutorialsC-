@@ -7,7 +7,7 @@ ATutoGameMode::ATutoGameMode(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer)
 {
 	static ConstructorHelpers::FClassFinder<APawn>
-		PlayerPawnObject(TEXT("Pawn'/Game/AddingContent/Blueprint/BP_TutoJoueur.BP_TutoJoueur_C'"));
+		PlayerPawnObject(TEXT("Pawn'/Game/AddingContent/Blueprint/BP_TutoPlayer.BP_TutoPlayer_C'"));
 	if (PlayerPawnObject.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnObject.Class;
