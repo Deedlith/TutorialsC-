@@ -18,17 +18,17 @@ struct FItem
 	int32 ID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FString Nom;
+	FString Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 Quantite;
+	int32 Quantity;
 
 	FItem()
 	{
 		//mettre l'initialisation des variables ici 
 		ID = -1;
-		Nom = "UNKNOWN";
-		Quantite = 1;
+		Name = "UNKNOWN";
+		Quantity = 1;
 	}
 
 };

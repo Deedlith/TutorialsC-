@@ -128,7 +128,7 @@ int32 ATutoPlayer::GetNumberFromID(int32 TheID)
 	{
 		if (Inventory[index].ID == TheID)
 		{
-			retour = Inventory[index].Quantite;
+			retour = Inventory[index].Quantity;
 			break;
 		}
 	}
@@ -156,7 +156,7 @@ void ATutoPlayer::AddItemWithID(int32 TheID)
 	if (Number < NumberMaxItem)
 	{
 		int32 index = GetItemIndexWithID(TheID);
-		Inventory[index].Quantite++;
+		Inventory[index].Quantity++;
 	}
 	else
 	{
@@ -174,7 +174,7 @@ void ATutoPlayer::RemoveItemWithID(int32 TheID)
 	if (Number > 0)
 	{
 		int32 index = GetItemIndexWithID(TheID);
-		Inventory[index].Quantite--;
+		Inventory[index].Quantity--;
 	}
 	else
 	{
@@ -336,12 +336,12 @@ void ATutoPlayer::RemoveItemWithIDAndNumber(int32 TheID, int32 TheNumber)
 	if (Number - TheNumber > 0)
 	{
 		int32 index = GetItemIndexWithID(TheID);
-		Inventory[index].Quantite -= TheNumber;
+		Inventory[index].Quantity -= TheNumber;
 	}
 	else
 	{
 		int32 index = GetItemIndexWithID(TheID);
-		Inventory[index].Quantite = 0;
+		Inventory[index].Quantity = 0;
 	}
 }
 
