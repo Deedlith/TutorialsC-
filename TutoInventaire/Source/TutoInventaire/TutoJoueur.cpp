@@ -108,7 +108,7 @@ void ATutoJoueur::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	InputComponent->BindAction("AddObject", IE_Pressed, this, &ATutoJoueur::AddObject);
 	InputComponent->BindAction("RemoveObject", IE_Pressed, this, &ATutoJoueur::RemoveObject);
-	InputComponent->BindAction("Inventaire", IE_Pressed, this, &ATutoJoueur::ChangeInventoryState);
+	InputComponent->BindAction("Inventory", IE_Pressed, this, &ATutoJoueur::ChangeInventoryState);
 	InputComponent->BindAction("Action", IE_Pressed, this, &ATutoJoueur::OnUse);
 	InputComponent->BindAction("UpCraft", IE_Pressed, this, &ATutoJoueur::UpCraft);
 	InputComponent->BindAction("DownCraft", IE_Pressed, this, &ATutoJoueur::DownCraft);
