@@ -8,7 +8,10 @@ ATutoPlayer::ATutoPlayer()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+}
 
+void ATutoPlayer::InitCraft()
+{
 	NumberMaxItem = 5;
 
 	FCraft CurrentCraft;
@@ -85,9 +88,28 @@ ATutoPlayer::ATutoPlayer()
 	Craft.Add(CurrentCraft);
 
 	CurrentCraft.Requirement.Empty();
-
 }
 
+ATutoPlayer::ATutoPlayer(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+	InitCraft();
+	//ATutoPlayer();
+	//no weapon at beginning
+	currentWeapon = nullptr;
+	//player doesn't shoot at beginning
+	isFiring = false;
+
+	//create player's camera
+	camera = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("Camera"));
+	//Attach to player
+	camera->SetupAttachment(GetCapsuleComponent());
+
+	GetMesh()->SetupAttachment(camera);
+}
 // Called when the game starts or when spawned
 void ATutoPlayer::BeginPlay()
 {
@@ -113,6 +135,10 @@ void ATutoPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComponent->BindAction("Action", IE_Pressed, this, &ATutoPlayer::OnUse);
 	InputComponent->BindAction("UpCraft", IE_Pressed, this, &ATutoPlayer::UpCraft);
 	InputComponent->BindAction("DownCraft", IE_Pressed, this, &ATutoPlayer::DownCraft);
+	InputComponent->BindAction("Fire", IE_Pressed, this, &ATutoPlayer::Fire);
+	InputComponent->BindAction("Fire", IE_Released, this, &ATutoPlayer::StopFire);
+	InputComponent->BindAction("Reload", IE_Pressed, this, &ATutoPlayer::Reload);
+	//InputComponent->BindAction("Action", IE_Pressed, this, &ATutoPlayer::Action); NEED TO MERGE
 
 	InputComponent->BindAxis("Forward", this, &ATutoPlayer::MoveForward);
 	InputComponent->BindAxis("Right", this, &ATutoPlayer::MoveRight);
@@ -239,6 +265,29 @@ void ATutoPlayer::MoveRight(float value)
 	}
 }
 
+//Move mouse vertical
+/**
+ |89| valeur max sinon camera peut s'inverser et avoir la tête à l'envers
+**/
+void ATutoPlayer::LookUp(float value)
+{
+	//reverse mouse's roatation to up, (View up)
+	float tmpAmount = value * -1;
+	if (value != 0)
+	{
+		//if go down
+		if (tmpAmount < 0 && camera->RelativeRotation.Pitch + tmpAmount > -89)
+		{
+			camera->AddRelativeRotation(FRotator(tmpAmount, 0, 0));
+		}
+		//if go up
+		else if (tmpAmount > 0 && camera->RelativeRotation.Pitch + tmpAmount < 89)
+		{
+			camera->AddRelativeRotation(FRotator(tmpAmount, 0, 0));
+		}
+	}
+}
+
 void ATutoPlayer::OnUse()
 {
 	if (InventoryScreen)
@@ -352,5 +401,74 @@ void ATutoPlayer::CraftItem(int32 index)
 	{
 		RemoveItemWithIDAndNumber(Craft[index].Requirement[i].ID, Craft[index].Requirement[i].Quantity);
 	}
+}
+
+//Handle fire
+void ATutoPlayer::Fire()
+{
+	isFiring = true;
+}
+void ATutoPlayer::StopFire()
+{
+	isFiring = false;
+}
+
+
+void ATutoPlayer::Reload()
+{
+	//if (currentWeapon)
+	//	currentWeapon->Reload();
+}
+
+//Get weapon
+void ATutoPlayer::Action()
+{
+	//options for raycast
+	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+	RV_TraceParams.bTraceComplex = true;
+	RV_TraceParams.bTraceAsyncScene = true;
+	RV_TraceParams.bReturnPhysicalMaterial = false;
+
+	//Init
+	FHitResult RV_Hit(ForceInit);
+
+	//Get camera's position
+	FVector startFire = camera->GetComponentLocation();
+	//create a point from 500 m (player) in the camera's direction
+	FVector endFire = startFire + (camera->GetComponentRotation().Vector() * 500.0f);
+
+	//call GetWorld() from within an actor extending class	GetWorld()->LineTraceSingleByChannel
+	(
+		RV_Hit,					//result
+		startFire,				//start
+		endFire,				//end
+		ECC_Visibility,			//collision channel
+		RV_TraceParams
+	);
+
+	//Collision !!!!
+	if (RV_Hit.GetActor())
+	{
+		ATutoWeapon* weapon = Cast<ATutoWeapon>(RV_Hit.GetActor());
+		if (weapon)
+		{
+			Equip(weapon);
+		}
+	}
+}
+
+void ATutoPlayer::Equip(ATutoWeapon* aWeapon)
+{
+	//if we already have a weapon in hand
+	if (currentWeapon)
+	{
+		//Detach
+		currentWeapon->DetachRootComponentFromParent();
+		currentWeapon->SetOwner(nullptr);
+	}
+	currentWeapon = aWeapon;
+	currentWeapon->SetOwner(this);
+	currentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("GripPoint"));
+	currentWeapon->SetActorRelativeRotation(FRotator(0, 90.0f, 0));
 }
 

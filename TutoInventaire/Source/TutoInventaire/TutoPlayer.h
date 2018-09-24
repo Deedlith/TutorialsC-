@@ -9,6 +9,7 @@
 #include "Engine.h"
 #include "TutoItem.h"
 #include "Data.h"
+#include "TutoWeapon.h"
 /* insert include here */
 #include "TutoPlayer.generated.h"
 
@@ -17,9 +18,12 @@ class TUTOINVENTAIRE_API ATutoPlayer : public ACharacter
 {
 	GENERATED_BODY()
 
+
 public:
 	// Sets default values for this character's properties
 	ATutoPlayer();
+
+	ATutoPlayer(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -76,6 +80,9 @@ public:
 	UFUNCTION()
 		void ChangeInventoryState();
 
+	UFUNCTION()
+		void InitCraft();
+
 	// Move the player forward and backward
 	UFUNCTION(BlueprintCallable, Category = "Move")
 		void MoveForward(float value);
@@ -83,6 +90,9 @@ public:
 	// Move the player right and left
 	UFUNCTION(BlueprintCallable, Category = "Move")
 		void MoveRight(float value);
+
+	//Move mouse vertical
+	void LookUp(float value);
 
 	//handles use
 	UFUNCTION()
@@ -106,6 +116,31 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 		void CraftItem(int32 index);
+
+#pragma region ARME  
+	//Handle fire
+	void Fire();
+	void StopFire();
+
+	//Is player firing ?
+	bool isFiring;
+
+	void Reload();
+
+	//Get weapon
+	void Action();
+
+	void Equip(ATutoWeapon* aWeapon);
+
+	//Weapon
+	UPROPERTY(EditDefaultsOnly, BLueprintReadWrite, Category = "Weapon")
+		ATutoWeapon* currentWeapon;
+
+	//composants
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
+		UCameraComponent* camera;
+
+#pragma endregion ARME  
 
 	
 };
