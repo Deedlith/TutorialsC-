@@ -28,7 +28,7 @@ struct FItem
 		//mettre l'initialisation des variables ici 
 		ID = -1;
 		Name = "UNKNOWN";
-		Quantity = 1;
+		Quantity = 0;
 	}
 
 };
