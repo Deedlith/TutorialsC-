@@ -9,7 +9,7 @@
 #include "Engine.h"
 #include "TutoItem.h"
 #include "Data.h"
-#include "TutoWeapon.h"
+//#include "TutoWeapon.h"
 /* insert include here */
 #include "TutoPlayer.generated.h"
 
@@ -52,8 +52,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		TArray<FCraft> Craft;
 
+	//Array of weapon
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+		TArray<FWeapons> Weapons;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		int32 indexCraft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
+		int32 indexItemsInventory;
 
 	// Return the Number of Item From a specific ID
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
@@ -106,9 +113,21 @@ public:
 	UFUNCTION()
 		void DownCraft();
 
+	// Go LEFT int the inventory list
+	UFUNCTION()
+		void LeftItemInventory();
+
+	// GO RIGHT int the inventory list
+	UFUNCTION()
+		void RightItemInventory();
+
 	// Check if we have all items to craft the selected item
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 		bool GetEnoughItem(int32 index);
+
+	// Check if we have all items to craft the selected item
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+		int GetItemSelectedInventory();
 
 	//Remove an item in the inventory with the specific ID and Number
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")

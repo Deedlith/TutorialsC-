@@ -135,6 +135,8 @@ void ATutoPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComponent->BindAction("Action", IE_Pressed, this, &ATutoPlayer::OnUse);
 	InputComponent->BindAction("UpCraft", IE_Pressed, this, &ATutoPlayer::UpCraft);
 	InputComponent->BindAction("DownCraft", IE_Pressed, this, &ATutoPlayer::DownCraft);
+	InputComponent->BindAction("LeftItemInventory", IE_Pressed, this, &ATutoPlayer::LeftItemInventory);
+	InputComponent->BindAction("RightItemInventory", IE_Pressed, this, &ATutoPlayer::RightItemInventory);
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ATutoPlayer::Fire);
 	InputComponent->BindAction("Fire", IE_Released, this, &ATutoPlayer::StopFire);
 	InputComponent->BindAction("Reload", IE_Pressed, this, &ATutoPlayer::Reload);
@@ -362,6 +364,22 @@ void ATutoPlayer::DownCraft()
 	}
 }
 
+void ATutoPlayer::LeftItemInventory()
+{
+	if (InventoryScreen && indexItemsInventory - 1 >= 0)
+	{
+		indexItemsInventory--;
+	}
+}
+
+void ATutoPlayer::RightItemInventory()
+{
+	if (InventoryScreen && indexItemsInventory + 1 < Weapons.Num())
+	{
+		indexItemsInventory++;
+	}
+}
+
 bool ATutoPlayer::GetEnoughItem(int32 index)
 {
 	bool canCraft = true;
@@ -377,6 +395,11 @@ bool ATutoPlayer::GetEnoughItem(int32 index)
 		}
 	}
 	return canCraft;
+}
+
+int ATutoPlayer::GetItemSelectedInventory()
+{
+	return indexItemsInventory;
 }
 
 void ATutoPlayer::RemoveItemWithIDAndNumber(int32 TheID, int32 TheNumber)

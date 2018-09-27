@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TutoWeapon.h"
 #include "TutoDataBase.generated.h"
 
 
@@ -72,6 +73,20 @@ struct FCraft
 		ID = -1;
 		Quantity = 1;
 		Name = "UNKNOWN";
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FWeapons
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Craft")
+	ATutoWeapon* Weapon;
+
+	FWeapons()
+	{
+		Weapon = nullptr;
 	}
 };
 
