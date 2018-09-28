@@ -121,13 +121,12 @@ public:
 	UFUNCTION()
 		void RightItemInventory();
 
-	// Check if we have all items to craft the selected item
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-		bool GetEnoughItem(int32 index);
+		bool GetColorSelected(int32 index);
 
 	// Check if we have all items to craft the selected item
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-		int GetItemSelectedInventory();
+		bool GetEnoughItem(int32 index);
 
 	//Remove an item in the inventory with the specific ID and Number
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")

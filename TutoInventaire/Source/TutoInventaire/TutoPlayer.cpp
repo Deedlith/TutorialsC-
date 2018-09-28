@@ -372,9 +372,16 @@ void ATutoPlayer::LeftItemInventory()
 	}
 }
 
+bool ATutoPlayer::GetColorSelected(int32 index)
+{
+	if (index == indexItemsInventory)
+		return true;
+	return false;
+}
+
 void ATutoPlayer::RightItemInventory()
 {
-	if (InventoryScreen && indexItemsInventory + 1 < Weapons.Num())
+	if (InventoryScreen)
 	{
 		indexItemsInventory++;
 	}
@@ -397,10 +404,6 @@ bool ATutoPlayer::GetEnoughItem(int32 index)
 	return canCraft;
 }
 
-int ATutoPlayer::GetItemSelectedInventory()
-{
-	return indexItemsInventory;
-}
 
 void ATutoPlayer::RemoveItemWithIDAndNumber(int32 TheID, int32 TheNumber)
 {
