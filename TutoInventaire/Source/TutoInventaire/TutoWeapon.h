@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "Components/ArrowComponent.h"
+#include "TutoDataBase.h"
 #include "TutoWeapon.generated.h"
 
 
@@ -34,16 +35,11 @@ public:
 
 	void Reload();
 
-	void Init();
-
 	void FullMagazine(); //reload full charger
 
 	void Equip(ATutoPlayer* player);
 
 	ATutoPlayer* owner;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		bool initWithRandom;
 
 	//events
 	bool isReloading;
@@ -52,14 +48,18 @@ public:
 	float currentCoolDownFire;
 
 #pragma region stats
+	//Weapon Information
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	FWeapon info;
 	//stats weapon
-	float fireRate; //time between fire (plus il est bas plus on tire vite)
-	int bulletPerMagazine; //Nb balles max par chargeur
-	int currentBullet; // nb bullet in magazine (current)
-	int totalBullet; // nb bullet on me
-	int damage; // damage of weapon
-	float weaponRange; // range for fire
-	float reloadTime; // time of reloading
+	//FString name;
+	//float fireRate; //time between fire (plus il est bas plus on tire vite)
+	//int bulletPerMagazine; //Nb balles max par chargeur
+	//int currentBullet; // nb bullet in magazine (current)
+	//int totalBullet; // nb bullet on me
+	//int damage; // damage of weapon
+	//float weaponRange; // range for fire
+	//float reloadTime; // time of reloading
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		int GetCurrentBullet();

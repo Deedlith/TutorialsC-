@@ -19,18 +19,9 @@ ATutoWeapon::ATutoWeapon(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = true;
 
 	owner = nullptr;
-	initWithRandom = false;
 	isReloading = false;
 	currentTimeReloading = 0.0f;
 	canFire = true;
-
-	fireRate = 1.0f;
-	bulletPerMagazine = 10;
-	currentBullet = bulletPerMagazine;
-	totalBullet = 10;
-	damage = 10;
-	weaponRange = 200.0f;
-	reloadTime = 2.0f;
 
 	/**
 	 * Le BoxComponent va être la racine de notre objet, c'est lui qui va gérer la récupération de notre
@@ -51,9 +42,6 @@ arme. Le mesh sera en enfant et la flèche tout à la fin afin qu'elle suive l'arm
 void ATutoWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (initWithRandom)
-		Init();
 	
 }
 
@@ -69,7 +57,7 @@ void ATutoWeapon::Tick(float DeltaTime)
 	if (isReloading)
 	{
 		currentTimeReloading += DeltaTime;
-		if (currentTimeReloading >= reloadTime)
+		if (currentTimeReloading >= info.reloadTime)
 		{
 			isReloading = false;
 			FullMagazine();
@@ -79,7 +67,7 @@ void ATutoWeapon::Tick(float DeltaTime)
 	if (!canFire)
 	{
 		currentCoolDownFire += DeltaTime;
-		if (currentCoolDownFire >= fireRate)
+		if (currentCoolDownFire >= info.fireRate)
 			canFire = true;
 	}
 }
@@ -88,7 +76,7 @@ void ATutoWeapon::Fire()
 {
 	if (!isReloading && canFire && owner)
 	{
-		currentBullet--;
+		info.currentBullet--;
 		currentCoolDownFire = 0.0;
 		canFire = false;
 
@@ -101,7 +89,7 @@ void ATutoWeapon::Fire()
 		FHitResult RV_Hit(ForceInit);
 
 		FVector startFire = fireStart->GetComponentLocation();
-		FVector endFire = startFire + (owner->GetActorRotation().Vector() * weaponRange);
+		FVector endFire = startFire + (owner->GetActorRotation().Vector() * info.weaponRange);
 
 		//call GetWorld() from within an actor extending class
 		GetWorld()->LineTraceSingleByChannel(
@@ -124,7 +112,7 @@ void ATutoWeapon::Fire()
 				UE_LOG(LogTemp, Warning, TEXT("Enemy HIT ! "));
 		}
 
-		if (currentBullet <= 0)
+		if (info.currentBullet <= 0)
 		{
 			Reload();
 		}
@@ -134,37 +122,27 @@ void ATutoWeapon::Fire()
 void ATutoWeapon::Reload() 
 {
 
-	if (!isReloading && currentBullet < bulletPerMagazine)
+	if (!isReloading && info.currentBullet < info.bulletPerMagazine)
 	{
 		isReloading = true;
 		currentTimeReloading = 0.0f;
 	}
 }
 
-void ATutoWeapon::Init() 
-{
-	fireRate = FMath::RandRange(0.1f, 1.0f);
-	bulletPerMagazine = FMath::RandRange(10, 20);
-	currentBullet = bulletPerMagazine;
-	totalBullet = FMath::RandRange(50, 200);
-	damage = FMath::RandRange(10, 100);
-	weaponRange = FMath::RandRange(100.0f, 500.0f);
-	reloadTime = FMath::RandRange(1.0f, 3.0f);
-}
 
 void ATutoWeapon::FullMagazine() 
 {
-	int missingBullets = bulletPerMagazine - currentBullet;
+	int missingBullets = info.bulletPerMagazine - info.currentBullet;
 
-	if (totalBullet - missingBullets > 0)
+	if (info.totalBullet - missingBullets > 0)
 	{
-		currentBullet += missingBullets;
-		totalBullet -= missingBullets;
+		info.currentBullet += missingBullets;
+		info.totalBullet -= missingBullets;
 	}
 	else
 	{
-		currentBullet += totalBullet;
-		totalBullet = 0;
+		info.currentBullet += info.totalBullet;
+		info.totalBullet = 0;
 	}
 }
 
@@ -179,13 +157,13 @@ void ATutoWeapon::Equip(ATutoPlayer* player)
 #pragma region stats
 int ATutoWeapon::GetCurrentBullet() 
 {
-	return currentBullet;
+	return info.currentBullet;
 }
 
 
 int ATutoWeapon::GeTotalBullet() 
 {
-	return totalBullet;
+	return info.totalBullet;
 }
 
 
@@ -196,28 +174,28 @@ bool ATutoWeapon::IsReloading()
 
 float ATutoWeapon::GetFireRate() 
 {
-	return fireRate;
+	return info.fireRate;
 
 }
 
 int ATutoWeapon::GetBulletPerMagazine() 
 {
-	return bulletPerMagazine;
+	return info.bulletPerMagazine;
 }
 
 
 int ATutoWeapon::GetDamage() {
-	return damage;
+	return info.damage;
 }
 
 
 float ATutoWeapon::GetWeaponRange() {
-	return weaponRange;
+	return info.weaponRange;
 }
 
 
 float ATutoWeapon::GetReloadTime() {
-	return reloadTime;
+	return info.reloadTime;
 }
 
 #pragma endregion stats

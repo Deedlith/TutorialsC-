@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TutoWeapon.h"
 #include "TutoDataBase.generated.h"
 
 
@@ -77,16 +76,51 @@ struct FCraft
 };
 
 USTRUCT(BlueprintType)
-struct FWeapons
+struct FWeapon
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Craft")
-	ATutoWeapon* Weapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	FString name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	float fireRate; //time between fire (plus il est bas plus on tire vite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	int bulletPerMagazine; //Nb balles max par chargeur
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	int currentBullet; // nb bullet in magazine (current)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	int totalBullet; // nb bullet on me
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	int damage; // damage of weapon
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	float weaponRange; // range for fire
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	float reloadTime; // time of reloading
 
-	FWeapons()
+	FWeapon(bool init = false)
 	{
-		Weapon = nullptr;
+		if (init)
+		{
+			name = "";
+			fireRate = FMath::RandRange(0.1f, 1.0f);
+			bulletPerMagazine = FMath::RandRange(10, 20);
+			currentBullet = bulletPerMagazine;
+			totalBullet = FMath::RandRange(50, 200);
+			damage = FMath::RandRange(10, 100);
+			weaponRange = FMath::RandRange(100.0f, 500.0f);
+			reloadTime = FMath::RandRange(1.0f, 3.0f);
+		}
+		else
+		{
+			name = "";
+			fireRate = 1.0f;
+			bulletPerMagazine = 10;
+			currentBullet = bulletPerMagazine;
+			totalBullet = 10;
+			damage = 10;
+			weaponRange = 200.0f;
+			reloadTime = 2.0f;
+		}
 	}
 };
 

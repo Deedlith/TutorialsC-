@@ -9,7 +9,7 @@
 #include "Engine.h"
 #include "TutoItem.h"
 #include "Data.h"
-//#include "TutoWeapon.h"
+#include "TutoWeapon.h"
 /* insert include here */
 #include "TutoPlayer.generated.h"
 
@@ -54,7 +54,7 @@ public:
 
 	//Array of weapon
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
-		TArray<FWeapons> Weapons;
+		TArray<FWeapon> InventoryWeapons;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 		int32 indexCraft;
@@ -145,9 +145,6 @@ public:
 
 	void Reload();
 
-	//Get weapon
-	void Action();
-
 	void Equip(ATutoWeapon* aWeapon);
 
 	//Weapon
@@ -158,6 +155,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
 		UCameraComponent* camera;
 
+	/* Return the Index of WeaponItem from a specific Name */
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	int32 GetItemWeaponIndexWithName(FString Name);
 #pragma endregion ARME  
 
 	
