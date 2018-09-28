@@ -143,6 +143,9 @@ public:
 	//Is player firing ?
 	bool isFiring;
 
+	bool canTakeWeapon = false;
+
+	ATutoWeapon* WeaponToPickUp;
 	void Reload();
 
 	void Equip(ATutoWeapon* aWeapon);

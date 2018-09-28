@@ -126,6 +126,50 @@ void ATutoPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//options for raycast
+	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+	//RV_TraceParams.bTraceComplex = true;
+	RV_TraceParams.bTraceAsyncScene = true;
+	RV_TraceParams.bReturnPhysicalMaterial = false;
+
+	//Init
+	//FHitResult RV_Hit(ForceInit);
+
+	FHitResult RV_Hit(ForceInit);
+	FVector CamLoc;
+	FRotator CamRot;
+
+	CamLoc = GetActorLocation();
+	CamRot = GetActorRotation();
+	//Controller->GetPlayerViewPoint(CamLoc, CamRot); // Get the camera position and rotation
+	const FVector StartTrace = CamLoc; // trace start is the camera location
+	const FVector Direction = CamRot.Vector();
+	const FVector EndTrace = StartTrace + Direction * 200; // and trace end is the camera location + an offset in the direction you are looking, the 200 is the distance at wich it checks
+
+	//Get camera's position
+	FVector startFire = camera->GetComponentLocation();
+	//create a point from 500 m (player) in the camera's direction
+	FVector endFire = startFire + (camera->GetComponentRotation().Vector() * 500.0f);
+//call GetWorld() from within an actor extending class	bool debugTrace = false;	debugTrace = GetWorld()->LineTraceSingleByChannel
+	(
+		RV_Hit,					//result
+		startFire,				//start
+		endFire,				//end
+		ECC_Visibility,			//collision channel
+		RV_TraceParams
+	);
+
+	DrawDebugLine(GetWorld(), startFire, endFire, FColor(255, 0, 0), true);
+	
+	//Collision !!!!
+	if (RV_Hit.GetActor())
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Weapon !!!"));
+		}
+		WeaponToPickUp = Cast<ATutoWeapon>(RV_Hit.GetActor());
+	}
 }
 
 // Called to bind functionality to input
@@ -148,7 +192,7 @@ void ATutoPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComponent->BindAxis("Forward", this, &ATutoPlayer::MoveForward);
 	InputComponent->BindAxis("Right", this, &ATutoPlayer::MoveRight);
 	InputComponent->BindAxis("TurnAtRate", this, &ATutoPlayer::AddControllerYawInput);
-	InputComponent->BindAxis("LookUpAtRate", this, &ATutoPlayer::AddControllerPitchInput);
+	InputComponent->BindAxis("LookUpAtRate", this, &ATutoPlayer::LookUp);
 }
 
 // Return the Number of Item from a specific ID
@@ -349,67 +393,38 @@ void ATutoPlayer::OnUse()
 			ItemToPickUp = nullptr;
 		}
 
-		//options for raycast
-		FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
-		RV_TraceParams.bTraceComplex = true;
-		RV_TraceParams.bTraceAsyncScene = true;
-		RV_TraceParams.bReturnPhysicalMaterial = false;
-
-		//Init
-		FHitResult RV_Hit(ForceInit);
-
-		//Get camera's position
-		FVector startFire = camera->GetComponentLocation();
-		//create a point from 500 m (player) in the camera's direction
-		FVector endFire = startFire + (camera->GetComponentRotation().Vector() * 500.0f);
-
-		//call GetWorld() from within an actor extending class		GetWorld()->LineTraceSingleByChannel
-		(
-			RV_Hit,					//result
-			startFire,				//start
-			endFire,				//end
-			ECC_Visibility,			//collision channel
-			RV_TraceParams
-		);
-
 		//Collision !!!!
-		if (RV_Hit.GetActor())
+		if (WeaponToPickUp)
 		{
 			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Weapon !!!"));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, ID :" + WeaponToPickUp->info.name));
 			}
-			ATutoWeapon* weapon = Cast<ATutoWeapon>(RV_Hit.GetActor());
-			if (weapon)
+
+			if (currentWeapon)
 			{
-				if (GEngine)
+
+				//Get Index of Item Pick UP
+				int32 index = GetItemWeaponIndexWithName(WeaponToPickUp->info.name);
+
+				//Weapon doesn't exit add them to the Inventaire
+				if (index == -1)
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, ID :" + weapon->info.name));
+					FWeapon NewItem = WeaponToPickUp->info;
+					int32 TheIndex = InventoryWeapons.Add(NewItem);
 				}
-
-				if (currentWeapon)
+				//Item already exist, can't have the same weapon // for the moment
+				else
 				{
-
-					//Get Index of Item Pick UP
-					int32 index = GetItemWeaponIndexWithName(weapon->info.name);
-
-					//Weapon doesn't exit add them to the Inventaire
-					if (index == -1)
+					if (GEngine)
 					{
-						FWeapon NewItem = weapon->info;
-						int32 TheIndex = InventoryWeapons.Add(NewItem);
-					}
-					//Item already exist, can't have the same weapon // for the moment
-					else
-					{
-						if (GEngine)
-						{
-							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("we already have this type of weapon,  Name :" + weapon->info.name));
-						}
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("we already have this type of weapon,  Name :" + WeaponToPickUp->info.name));
 					}
 				}
-				else Equip(weapon);
 			}
+			else Equip(WeaponToPickUp);
+			WeaponToPickUp->Destroy();
+			WeaponToPickUp = nullptr;
 		}
 	}
 }
