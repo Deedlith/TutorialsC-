@@ -6,6 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "TutoDataBase.generated.h"
 
+UENUM(BlueprintType)
+enum class ETypeWeapon : uint8
+{
+	ShotGun,
+	Pistol,
+	Sniper,
+	Rifle
+};
 
 USTRUCT(BlueprintType)
 struct FItem
@@ -82,45 +90,30 @@ struct FWeapon
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	FString name;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	float fireRate; //time between fire (plus il est bas plus on tire vite)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	int bulletPerMagazine; //Nb balles max par chargeur
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	int currentBullet; // nb bullet in magazine (current)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	int totalBullet; // nb bullet on me
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	int damage; // damage of weapon
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	float weaponRange; // range for fire
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	float reloadTime; // time of reloading
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ToolTip = "time between fire (plus il est bas plus on tire vite - [0.1f, 1.0f]"))
+	float fireRate; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ToolTip = "Nb balles max par chargeur - [3f, 60f]"))
+	int bulletPerMagazine; 
+	int currentBullet; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ToolTip = "damage of weapon - [10f, 100f]"))
+	int damage; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ToolTip = "range for fire - [100f, 500f]"))
+	float weaponRange; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ToolTip = "time of reloading - [1.0f, 3.0f]"))
+	float reloadTime; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ToolTip = "type of weapon (SHOTGUN , PISTOL, SNIPER, RIFLE)"))
+	ETypeWeapon typeWeapon;
 
-	FWeapon(bool init = false)
+	FWeapon()
 	{
-		if (init)
-		{
-			name = "";
-			fireRate = FMath::RandRange(0.1f, 1.0f);
-			bulletPerMagazine = FMath::RandRange(10, 20);
-			currentBullet = bulletPerMagazine;
-			totalBullet = FMath::RandRange(50, 200);
-			damage = FMath::RandRange(10, 100);
-			weaponRange = FMath::RandRange(100.0f, 500.0f);
-			reloadTime = FMath::RandRange(1.0f, 3.0f);
-		}
-		else
-		{
-			name = "";
-			fireRate = 1.0f;
-			bulletPerMagazine = 10;
-			currentBullet = bulletPerMagazine;
-			totalBullet = 10;
-			damage = 10;
-			weaponRange = 200.0f;
-			reloadTime = 2.0f;
-		}
+		name = "";
+		typeWeapon = ETypeWeapon::Pistol;
+		fireRate = 1.0f;
+		bulletPerMagazine = 10;
+		currentBullet = bulletPerMagazine;
+		damage = 10;
+		weaponRange = 200.0f;
+		reloadTime = 2.0f;
 	}
 };
 

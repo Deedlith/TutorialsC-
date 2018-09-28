@@ -108,6 +108,11 @@ ATutoPlayer::ATutoPlayer(const FObjectInitializer& ObjectInitializer)
 	camera->SetupAttachment(GetCapsuleComponent());
 
 	GetMesh()->SetupAttachment(camera);
+
+	nbBulletsPerType.Add(ETypeWeapon::ShotGun, MAXBULLETSHOTGUN);
+	nbBulletsPerType.Add(ETypeWeapon::Pistol, MAXBULLETPISTOL);
+	nbBulletsPerType.Add(ETypeWeapon::Sniper, MAXBULLETSNIPER);
+	nbBulletsPerType.Add(ETypeWeapon::Rifle, MAXBULLETRIFLE);
 }
 // Called when the game starts or when spawned
 void ATutoPlayer::BeginPlay()

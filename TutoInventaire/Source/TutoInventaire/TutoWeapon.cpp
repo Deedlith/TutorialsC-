@@ -134,15 +134,15 @@ void ATutoWeapon::FullMagazine()
 {
 	int missingBullets = info.bulletPerMagazine - info.currentBullet;
 
-	if (info.totalBullet - missingBullets > 0)
+	if (owner->nbBulletsPerType[info.typeWeapon] - missingBullets > 0)
 	{
 		info.currentBullet += missingBullets;
-		info.totalBullet -= missingBullets;
+		owner->nbBulletsPerType[info.typeWeapon] -= missingBullets;
 	}
 	else
 	{
-		info.currentBullet += info.totalBullet;
-		info.totalBullet = 0;
+		info.currentBullet += owner->nbBulletsPerType[info.typeWeapon];
+		owner->nbBulletsPerType[info.typeWeapon] = 0;
 	}
 }
 
@@ -163,7 +163,7 @@ int ATutoWeapon::GetCurrentBullet()
 
 int ATutoWeapon::GeTotalBullet() 
 {
-	return info.totalBullet;
+	return owner->nbBulletsPerType[info.typeWeapon];
 }
 
 

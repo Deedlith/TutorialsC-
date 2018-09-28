@@ -147,6 +147,12 @@ public:
 
 	void Equip(ATutoWeapon* aWeapon);
 
+	const int32 MAXBULLETRIFLE = 60;
+	const int32 MAXBULLETPISTOL = 12;
+	const int32 MAXBULLETSHOTGUN = 8;
+	const int32 MAXBULLETSNIPER = 3;
+	TMap<ETypeWeapon, int32> nbBulletsPerType;
+
 	//Weapon
 	UPROPERTY(EditDefaultsOnly, BLueprintReadWrite, Category = "Weapon")
 		ATutoWeapon* currentWeapon;
