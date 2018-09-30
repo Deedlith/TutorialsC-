@@ -164,6 +164,10 @@ public:
 	/* Return the Index of WeaponItem from a specific Name */
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	int32 GetItemWeaponIndexWithName(FString Name);
+
+	bool DoTrace(FHitResult* RV_Hit, FCollisionQueryParams* RV_TraceParams);
+
+	ATutoWeapon* weaponRaycast;
 #pragma endregion ARME  
 
 	

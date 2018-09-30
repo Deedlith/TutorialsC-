@@ -126,6 +126,26 @@ void ATutoPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FHitResult RV_Hit(ForceInit);
+	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+
+	if (DoTrace(&RV_Hit, &RV_TraceParams))
+	{
+		//if (GEngine)
+		//{
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("RAYCAST !"));
+		//}
+
+		if (RV_Hit.GetActor())
+		{
+			//if (GEngine)
+			//{
+			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Weapon !!!"));
+			//}
+			weaponRaycast = Cast<ATutoWeapon>(RV_Hit.GetActor());
+		}
+	}
+
 }
 
 // Called to bind functionality to input
@@ -148,7 +168,7 @@ void ATutoPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComponent->BindAxis("Forward", this, &ATutoPlayer::MoveForward);
 	InputComponent->BindAxis("Right", this, &ATutoPlayer::MoveRight);
 	InputComponent->BindAxis("TurnAtRate", this, &ATutoPlayer::AddControllerYawInput);
-	InputComponent->BindAxis("LookUpAtRate", this, &ATutoPlayer::AddControllerPitchInput);
+	InputComponent->BindAxis("LookUpAtRate", this, &ATutoPlayer::LookUp);
 }
 
 // Return the Number of Item from a specific ID
@@ -349,69 +369,77 @@ void ATutoPlayer::OnUse()
 			ItemToPickUp = nullptr;
 		}
 
-		//options for raycast
-		FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
-		RV_TraceParams.bTraceComplex = true;
-		RV_TraceParams.bTraceAsyncScene = true;
-		RV_TraceParams.bReturnPhysicalMaterial = false;
-
-		//Init
-		FHitResult RV_Hit(ForceInit);
-
-		//Get camera's position
-		FVector startFire = camera->GetComponentLocation();
-		//create a point from 500 m (player) in the camera's direction
-		FVector endFire = startFire + (camera->GetComponentRotation().Vector() * 500.0f);
-
-		//call GetWorld() from within an actor extending class		GetWorld()->LineTraceSingleByChannel
-		(
-			RV_Hit,					//result
-			startFire,				//start
-			endFire,				//end
-			ECC_Visibility,			//collision channel
-			RV_TraceParams
-		);
+		
 
 		//Collision !!!!
-		if (RV_Hit.GetActor())
+		if (weaponRaycast)
 		{
 			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Weapon !!!"));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, ID :" + weaponRaycast->info.name));
 			}
-			ATutoWeapon* weapon = Cast<ATutoWeapon>(RV_Hit.GetActor());
-			if (weapon)
+
+			if (currentWeapon)
 			{
-				if (GEngine)
+				//Get Index of Item Pick UP
+				int32 index = GetItemWeaponIndexWithName(weaponRaycast->info.name);
+
+				//Weapon doesn't exit add them to the Inventaire
+				if (index == -1)
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, ID :" + weapon->info.name));
+					FWeapon NewItem = weaponRaycast->info;
+					int32 TheIndex = InventoryWeapons.Add(NewItem);
 				}
-
-				if (currentWeapon)
+				//Item already exist, can't have the same weapon // for the moment
+				else
 				{
-
-					//Get Index of Item Pick UP
-					int32 index = GetItemWeaponIndexWithName(weapon->info.name);
-
-					//Weapon doesn't exit add them to the Inventaire
-					if (index == -1)
+					if (GEngine)
 					{
-						FWeapon NewItem = weapon->info;
-						int32 TheIndex = InventoryWeapons.Add(NewItem);
-					}
-					//Item already exist, can't have the same weapon // for the moment
-					else
-					{
-						if (GEngine)
-						{
-							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("we already have this type of weapon,  Name :" + weapon->info.name));
-						}
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("we already have this type of weapon,  Name :" + weaponRaycast->info.name));
 					}
 				}
-				else Equip(weapon);
 			}
+			else Equip(weaponRaycast);
+			weaponRaycast->Destroy();
+			weaponRaycast = nullptr;
 		}
 	}
+}
+
+
+bool ATutoPlayer::DoTrace(FHitResult* RV_Hit, FCollisionQueryParams* RV_TraceParams)
+{
+	if (Controller == NULL) // access the controller, make sure we have one
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NO CONTROLLER"));
+		}
+		return false;
+	}
+
+#pragma region RaycastTuto  
+	//options for raycast
+	//RV_TraceParams.bTraceComplex = true;
+	//RV_TraceParams.bTraceAsyncScene = true;
+	//RV_TraceParams.bReturnPhysicalMaterial = false;
+
+	//Get camera's position
+	FVector startFire = camera->GetComponentLocation();
+	//create a point from 500 m (player) in the camera's direction
+	FVector endFire = startFire + (camera->GetComponentRotation().Vector() * 500.0f);
+
+	//call GetWorld() from within an actor extending class
+	bool DidTrace = GetWorld()->LineTraceSingleByChannel
+	(
+		*RV_Hit,					//result
+		startFire,				//start
+		endFire,				//end
+		ECC_Visibility,			//collision channel
+		*RV_TraceParams
+	);
+#pragma endregion RaycastTuto  
+	return DidTrace;
 }
 
 void ATutoPlayer::UpCraft()
@@ -522,6 +550,7 @@ void ATutoPlayer::Equip(ATutoWeapon* aWeapon)
 		currentWeapon->SetOwner(nullptr);
 	}
 	currentWeapon = aWeapon;
+	currentWeapon->Equip(this);
 	currentWeapon->SetOwner(this);
 	currentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("GripPoint"));
 	currentWeapon->SetActorRelativeRotation(FRotator(0, 90.0f, 0));

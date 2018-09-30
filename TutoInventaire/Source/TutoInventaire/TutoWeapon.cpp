@@ -163,7 +163,16 @@ int ATutoWeapon::GetCurrentBullet()
 
 int ATutoWeapon::GeTotalBullet() 
 {
-	return owner->nbBulletsPerType[info.typeWeapon];
+	if(owner)
+		return owner->nbBulletsPerType[info.typeWeapon];
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NO ONWER BECAREFUL!!!!"));
+		}
+		return 0;
+	}
 }
 
 
