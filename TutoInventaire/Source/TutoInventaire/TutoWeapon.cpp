@@ -10,14 +10,6 @@ ATutoWeapon::ATutoWeapon()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-}
-
-ATutoWeapon::ATutoWeapon(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	owner = nullptr;
 	isReloading = false;
 	currentTimeReloading = 0.0f;
@@ -27,15 +19,14 @@ ATutoWeapon::ATutoWeapon(const FObjectInitializer& ObjectInitializer)
 	 * Le BoxComponent va être la racine de notre objet, c'est lui qui va gérer la récupération de notre
 arme. Le mesh sera en enfant et la flèche tout à la fin afin qu'elle suive l'arme.
 	 */
-	triggerPickUp = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("TriggerPickUp"));
+	triggerPickUp = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerPickUp"));
 	RootComponent = triggerPickUp;
 
-	mesh = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("mesh"));
+	mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("mesh"));
 	mesh->SetupAttachment(RootComponent);
 
-	fireStart = ObjectInitializer.CreateDefaultSubobject<UArrowComponent>(this, TEXT("FireStart"));
+	fireStart = CreateDefaultSubobject<UArrowComponent>(TEXT("FireStart"));
 	fireStart->SetupAttachment(mesh);
-
 }
 
 // Called when the game starts or when spawned

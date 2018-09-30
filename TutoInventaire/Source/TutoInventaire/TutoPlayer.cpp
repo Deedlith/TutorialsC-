@@ -8,6 +8,23 @@ ATutoPlayer::ATutoPlayer()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	InitCraft();
+	//no weapon at beginning
+	currentWeapon = nullptr;
+	//player doesn't shoot at beginning
+	isFiring = false;
+
+	//create player's camera
+	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	//Attach to player
+	camera->SetupAttachment(GetCapsuleComponent());
+
+	GetMesh()->SetupAttachment(camera);
+
+	nbBulletsPerType.Add(ETypeWeapon::ShotGun, MAXBULLETSHOTGUN);
+	nbBulletsPerType.Add(ETypeWeapon::Pistol, MAXBULLETPISTOL);
+	nbBulletsPerType.Add(ETypeWeapon::Sniper, MAXBULLETSNIPER);
+	nbBulletsPerType.Add(ETypeWeapon::Rifle, MAXBULLETRIFLE);
 }
 
 void ATutoPlayer::InitCraft()
@@ -90,30 +107,6 @@ void ATutoPlayer::InitCraft()
 	CurrentCraft.Requirement.Empty();
 }
 
-ATutoPlayer::ATutoPlayer(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	InitCraft();
-	//no weapon at beginning
-	currentWeapon = nullptr;
-	//player doesn't shoot at beginning
-	isFiring = false;
-
-	//create player's camera
-	camera = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("Camera"));
-	//Attach to player
-	camera->SetupAttachment(GetCapsuleComponent());
-
-	GetMesh()->SetupAttachment(camera);
-
-	nbBulletsPerType.Add(ETypeWeapon::ShotGun, MAXBULLETSHOTGUN);
-	nbBulletsPerType.Add(ETypeWeapon::Pistol, MAXBULLETPISTOL);
-	nbBulletsPerType.Add(ETypeWeapon::Sniper, MAXBULLETSNIPER);
-	nbBulletsPerType.Add(ETypeWeapon::Rifle, MAXBULLETRIFLE);
-}
 // Called when the game starts or when spawned
 void ATutoPlayer::BeginPlay()
 {
@@ -376,7 +369,7 @@ void ATutoPlayer::OnUse()
 		{
 			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, ID :" + weaponRaycast->info.name));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, Name :" + weaponRaycast->info.name));
 			}
 
 			if (currentWeapon)
@@ -400,8 +393,6 @@ void ATutoPlayer::OnUse()
 				}
 			}
 			else Equip(weaponRaycast);
-			weaponRaycast->Destroy();
-			weaponRaycast = nullptr;
 		}
 	}
 }
@@ -552,8 +543,8 @@ void ATutoPlayer::Equip(ATutoWeapon* aWeapon)
 	currentWeapon = aWeapon;
 	currentWeapon->Equip(this);
 	currentWeapon->SetOwner(this);
-	currentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("GripPoint"));
-	currentWeapon->SetActorRelativeRotation(FRotator(0, 90.0f, 0));
+	currentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("GripPoint"));
+	currentWeapon->SetActorRelativeRotation(FRotator(0,90, 0));
 }
 
 /* Return the Index of WeaponItem from a specific Name */
