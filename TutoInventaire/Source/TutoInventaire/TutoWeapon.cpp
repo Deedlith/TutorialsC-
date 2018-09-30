@@ -67,6 +67,10 @@ void ATutoWeapon::Fire()
 {
 	if (!isReloading && canFire && owner)
 	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can Fire"));
+		}
 		info.currentBullet--;
 		currentCoolDownFire = 0.0;
 		canFire = false;
@@ -80,7 +84,7 @@ void ATutoWeapon::Fire()
 		FHitResult RV_Hit(ForceInit);
 
 		FVector startFire = fireStart->GetComponentLocation();
-		FVector endFire = startFire + (owner->GetActorRotation().Vector() * info.weaponRange);
+		FVector endFire = startFire + (fireStart->GetComponentRotation().Vector() * info.weaponRange);
 
 		//call GetWorld() from within an actor extending class
 		GetWorld()->LineTraceSingleByChannel(
@@ -106,6 +110,13 @@ void ATutoWeapon::Fire()
 		if (info.currentBullet <= 0)
 		{
 			Reload();
+		}
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't Fire"));
 		}
 	}
 }

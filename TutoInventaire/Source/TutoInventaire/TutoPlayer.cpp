@@ -409,11 +409,10 @@ bool ATutoPlayer::DoTrace(FHitResult* RV_Hit, FCollisionQueryParams* RV_TracePar
 		return false;
 	}
 
-#pragma region RaycastTuto  
 	//options for raycast
-	//RV_TraceParams.bTraceComplex = true;
-	//RV_TraceParams.bTraceAsyncScene = true;
-	//RV_TraceParams.bReturnPhysicalMaterial = false;
+	RV_TraceParams->bTraceComplex = true;
+	RV_TraceParams->bTraceAsyncScene = true;
+	RV_TraceParams->bReturnPhysicalMaterial = false;
 
 	//Get camera's position
 	FVector startFire = camera->GetComponentLocation();
@@ -429,7 +428,6 @@ bool ATutoPlayer::DoTrace(FHitResult* RV_Hit, FCollisionQueryParams* RV_TracePar
 		ECC_Visibility,			//collision channel
 		*RV_TraceParams
 	);
-#pragma endregion RaycastTuto  
 	return DidTrace;
 }
 
@@ -518,6 +516,8 @@ void ATutoPlayer::CraftItem(int32 index)
 void ATutoPlayer::Fire()
 {
 	isFiring = true;
+	if (currentWeapon)
+		currentWeapon->Fire();
 }
 void ATutoPlayer::StopFire()
 {
