@@ -21,7 +21,6 @@ class TUTOINVENTAIRE_API ATutoWeapon : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATutoWeapon();
-	ATutoWeapon(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -51,15 +50,6 @@ public:
 	//Weapon Information
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	FWeapon info;
-	//stats weapon
-	//FString name;
-	//float fireRate; //time between fire (plus il est bas plus on tire vite)
-	//int bulletPerMagazine; //Nb balles max par chargeur
-	//int currentBullet; // nb bullet in magazine (current)
-	//int totalBullet; // nb bullet on me
-	//int damage; // damage of weapon
-	//float weaponRange; // range for fire
-	//float reloadTime; // time of reloading
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		int GetCurrentBullet();

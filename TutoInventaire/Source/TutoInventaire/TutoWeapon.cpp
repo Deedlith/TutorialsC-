@@ -10,14 +10,6 @@ ATutoWeapon::ATutoWeapon()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-}
-
-ATutoWeapon::ATutoWeapon(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	owner = nullptr;
 	isReloading = false;
 	currentTimeReloading = 0.0f;
@@ -27,15 +19,14 @@ ATutoWeapon::ATutoWeapon(const FObjectInitializer& ObjectInitializer)
 	 * Le BoxComponent va être la racine de notre objet, c'est lui qui va gérer la récupération de notre
 arme. Le mesh sera en enfant et la flèche tout à la fin afin qu'elle suive l'arme.
 	 */
-	triggerPickUp = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("TriggerPickUp"));
+	triggerPickUp = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerPickUp"));
 	RootComponent = triggerPickUp;
 
-	mesh = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("mesh"));
+	mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("mesh"));
 	mesh->SetupAttachment(RootComponent);
 
-	fireStart = ObjectInitializer.CreateDefaultSubobject<UArrowComponent>(this, TEXT("FireStart"));
+	fireStart = CreateDefaultSubobject<UArrowComponent>(TEXT("FireStart"));
 	fireStart->SetupAttachment(mesh);
-
 }
 
 // Called when the game starts or when spawned
@@ -76,6 +67,10 @@ void ATutoWeapon::Fire()
 {
 	if (!isReloading && canFire && owner)
 	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can Fire"));
+		}
 		info.currentBullet--;
 		currentCoolDownFire = 0.0;
 		canFire = false;
@@ -89,7 +84,7 @@ void ATutoWeapon::Fire()
 		FHitResult RV_Hit(ForceInit);
 
 		FVector startFire = fireStart->GetComponentLocation();
-		FVector endFire = startFire + (owner->GetActorRotation().Vector() * info.weaponRange);
+		FVector endFire = startFire + (fireStart->GetComponentRotation().Vector() * info.weaponRange);
 
 		//call GetWorld() from within an actor extending class
 		GetWorld()->LineTraceSingleByChannel(
@@ -115,6 +110,13 @@ void ATutoWeapon::Fire()
 		if (info.currentBullet <= 0)
 		{
 			Reload();
+		}
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't Fire"));
 		}
 	}
 }
@@ -163,7 +165,16 @@ int ATutoWeapon::GetCurrentBullet()
 
 int ATutoWeapon::GeTotalBullet() 
 {
-	return owner->nbBulletsPerType[info.typeWeapon];
+	if(owner)
+		return owner->nbBulletsPerType[info.typeWeapon];
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NO ONWER BECAREFUL!!!!"));
+		}
+		return 0;
+	}
 }
 
 
