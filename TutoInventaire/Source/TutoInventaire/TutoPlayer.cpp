@@ -122,23 +122,10 @@ void ATutoPlayer::Tick(float DeltaTime)
 	FHitResult RV_Hit(ForceInit);
 	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
 
-	if (DoTrace(&RV_Hit, &RV_TraceParams))
+	if (DoTrace(&RV_Hit, &RV_TraceParams) && RV_Hit.GetActor())
 	{
-		//if (GEngine)
-		//{
-		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("RAYCAST !"));
-		//}
-
-		if (RV_Hit.GetActor())
-		{
-			//if (GEngine)
-			//{
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Weapon !!!"));
-			//}
-			weaponRaycast = Cast<ATutoWeapon>(RV_Hit.GetActor());
-		}
+		weaponRaycast = Cast<ATutoWeapon>(RV_Hit.GetActor());
 	}
-
 }
 
 // Called to bind functionality to input
@@ -362,39 +349,51 @@ void ATutoPlayer::OnUse()
 			ItemToPickUp = nullptr;
 		}
 
-		
-
 		//Collision !!!!
 		if (weaponRaycast)
 		{
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Infos Received, Name :" + weaponRaycast->info.name));
-			}
-
 			if (currentWeapon)
 			{
 				//Get Index of Item Pick UP
-				int32 index = GetItemWeaponIndexWithName(weaponRaycast->info.name);
+				int32 index = GetItemWeaponIndexWithType(weaponRaycast->info.typeWeapon);
 
 				//Weapon doesn't exit add them to the Inventaire
 				if (index == -1)
 				{
+					if (GEngine)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Add " + GetEnumAsString(weaponRaycast->info.typeWeapon)));
+					}
 					FWeapon NewItem = weaponRaycast->info;
 					int32 TheIndex = InventoryWeapons.Add(NewItem);
 				}
-				//Item already exist, can't have the same weapon // for the moment
+				//Item already exist, can't have the same type of weapon but get bullets
 				else
 				{
 					if (GEngine)
 					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("we already have this type of weapon,  Name :" + weaponRaycast->info.name));
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We already have this type of weapon : " + GetEnumAsString(weaponRaycast->info.typeWeapon)));
 					}
+				
+					if (InventoryWeapons[index].currentBullet < nbBulletsPerType[weaponRaycast->info.typeWeapon])
+					{
+						InventoryWeapons[index].currentBullet = nbBulletsPerType[weaponRaycast->info.typeWeapon] - InventoryWeapons[index].currentBullet;
+					}
+					
+					weaponRaycast->Destroy();
+					weaponRaycast = nullptr;
 				}
 			}
-			else Equip(weaponRaycast);
+			else
+				Equip(weaponRaycast);
 		}
 	}
+}
+
+FString ATutoPlayer::GetEnumAsString(ETypeWeapon EnumValue)
+{
+	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("ETypeWeapon"), true);
+	return EnumPtr->GetNameByValue((int64)EnumValue).ToString();;
 }
 
 
@@ -547,13 +546,13 @@ void ATutoPlayer::Equip(ATutoWeapon* aWeapon)
 	currentWeapon->SetActorRelativeRotation(FRotator(0,90, 0));
 }
 
-/* Return the Index of WeaponItem from a specific Name */
-int32 ATutoPlayer::GetItemWeaponIndexWithName(FString Name)
+/* Return the Index of WeaponItem from a specific type */
+int32 ATutoPlayer::GetItemWeaponIndexWithType(ETypeWeapon typeW)
 {
 	int32 retour = -1;
 	for (int32 index = 0; index < InventoryWeapons.Num(); index++)
 	{
-		if (InventoryWeapons[index].name.Equals(Name))
+		if (InventoryWeapons[index].typeWeapon == typeW)
 		{
 			retour = index;
 			break;

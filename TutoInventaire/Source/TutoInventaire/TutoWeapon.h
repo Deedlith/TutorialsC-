@@ -55,7 +55,7 @@ public:
 		int GetCurrentBullet();
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-		int GeTotalBullet();
+		int GetTotalBullet();
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		bool IsReloading();

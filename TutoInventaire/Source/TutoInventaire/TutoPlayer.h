@@ -162,13 +162,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
 		UCameraComponent* camera;
 
-	/* Return the Index of WeaponItem from a specific Name */
+	/* Return the Index of WeaponItem from a specific type */
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	int32 GetItemWeaponIndexWithName(FString Name);
+		int32 GetItemWeaponIndexWithType(ETypeWeapon typeW);
 
 	bool DoTrace(FHitResult* RV_Hit, FCollisionQueryParams* RV_TraceParams);
 
 	ATutoWeapon* weaponRaycast;
+
+	FString GetEnumAsString(ETypeWeapon EnumValue);
 #pragma endregion ARME  
 
 	

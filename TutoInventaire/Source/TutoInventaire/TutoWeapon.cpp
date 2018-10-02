@@ -163,7 +163,7 @@ int ATutoWeapon::GetCurrentBullet()
 }
 
 
-int ATutoWeapon::GeTotalBullet() 
+int ATutoWeapon::GetTotalBullet()
 {
 	if(owner)
 		return owner->nbBulletsPerType[info.typeWeapon];
@@ -206,6 +206,7 @@ float ATutoWeapon::GetWeaponRange() {
 
 
 float ATutoWeapon::GetReloadTime() {
+
 	return info.reloadTime;
 }
 
