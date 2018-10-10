@@ -11,6 +11,7 @@
 #include "Data.h"
 #include "TutoWeapon.h"
 #include "Components/TimelineComponent.h"
+#include "Components/BoxComponent.h"
 /* insert include here */
 #include "TutoPlayer.generated.h"
 
@@ -134,7 +135,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 		void CraftItem(int32 index);
 
-#pragma region ARME  
+#pragma region WEAPON  
 	//Handle fire
 	void Fire();
 	void StopFire();
@@ -172,7 +173,58 @@ public:
 	ATutoWeapon* weaponRaycast;
 
 	FString GetEnumAsString(ETypeWeapon EnumValue);
-#pragma endregion ARME  
+#pragma endregion WEAPON  
 
-	
+#pragma region HEALTH  
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float FullHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float HealthPercentage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float PreviousHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float FullMagic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float redFlash;
+
+	FTimeline MyTimeline;
+	float CurveFloatValue;
+	float TimelineValue;
+	FTimerHandle MemberTimerHandle;
+
+	/** Get Health */
+	UFUNCTION(BlueprintPure, Category = "Health")
+		float GetHealth();
+
+	/** Update Health */
+	UFUNCTION(BlueprintCallable, Category = "Health")
+		void UpdateHealth(float HealthChange);
+
+	/** Get Health Text */
+	UFUNCTION(BlueprintPure, Category = "Health")
+		FText GetHealthIntText();
+
+	/** Damage Timer */
+	UFUNCTION()
+		void DamageTimer();
+
+	/** Set Damage State */
+	UFUNCTION()
+		void SetDamageState();
+
+
+	/** Play Flash */
+	UFUNCTION(BlueprintPure, Category = "Health")
+		bool PlayFlash();
+
+	//UFUNCTION()
+	//	void ReceivePointDamage(float Damage, const UDamageType * DamageType, FVector HitLocation, FVector HitNormal, UPrimitiveComponent * HitComponent, FName BoneName, FVector ShotFromDirection, AController * InstigatedBy, AActor * DamageCauser, const FHitResult & HitInfo);
+#pragma endregion HEALTH  
 };

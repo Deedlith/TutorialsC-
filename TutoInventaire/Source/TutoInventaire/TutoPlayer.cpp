@@ -1,7 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TutoPlayer.h"
-
+//#include "UnrealCPPProjectile.h"
+#include "Animation/AnimInstance.h"
+#include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/InputComponent.h"
+#include "GameFramework/InputSettings.h"
+#include "HeadMountedDisplayFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "MotionControllerComponent.h"
+#include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+#include "Kismet/KismetMathLibrary.h"
+#include "TimerManager.h"
 
 // Sets default values
 ATutoPlayer::ATutoPlayer()
@@ -110,8 +121,14 @@ void ATutoPlayer::InitCraft()
 // Called when the game starts or when spawned
 void ATutoPlayer::BeginPlay()
 {
+	// Call the base class  
 	Super::BeginPlay();
-	
+
+	FullHealth = 1000.0f;
+	Health = FullHealth;
+	HealthPercentage = 1.0f;
+	PreviousHealth = HealthPercentage;
+	bCanBeDamaged = true;
 }
 
 // Called every frame
@@ -126,6 +143,8 @@ void ATutoPlayer::Tick(float DeltaTime)
 	{
 		weaponRaycast = Cast<ATutoWeapon>(RV_Hit.GetActor());
 	}
+
+	MyTimeline.TickTimeline(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -561,3 +580,53 @@ int32 ATutoPlayer::GetItemWeaponIndexWithType(ETypeWeapon typeW)
 	return retour;
 }
 
+float ATutoPlayer::GetHealth()
+{
+	return HealthPercentage;
+}
+
+FText ATutoPlayer::GetHealthIntText()
+{
+	int32 HP = FMath::RoundHalfFromZero(HealthPercentage * 100);
+	FString HPS = FString::FromInt(HP);
+	FString HealthHUD = HPS + FString(TEXT("%"));
+	FText HPText = FText::FromString(HealthHUD);
+	return HPText;
+}
+
+void ATutoPlayer::SetDamageState()
+{
+	bCanBeDamaged = true;
+}
+
+void ATutoPlayer::DamageTimer()
+{
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ATutoPlayer::SetDamageState, 2.0f, false);
+}
+
+bool ATutoPlayer::PlayFlash()
+{
+	if (redFlash)
+	{
+		redFlash = false;
+		return true;
+	}
+
+	return false;
+}
+
+//void ATutoPlayer::ReceivePointDamage(float Damage, const UDamageType * DamageType, FVector HitLocation, FVector HitNormal, UPrimitiveComponent * HitComponent, FName BoneName, FVector ShotFromDirection, AController * InstigatedBy, AActor * DamageCauser, const FHitResult & HitInfo)
+//{
+//	bCanBeDamaged = false;
+//	redFlash = true;
+//	UpdateHealth(-Damage);
+//	DamageTimer();
+//}
+
+void ATutoPlayer::UpdateHealth(float HealthChange)
+{
+	Health += HealthChange;
+	Health = FMath::Clamp(Health, 0.0f, FullHealth);
+	PreviousHealth = HealthPercentage;
+	HealthPercentage = Health / FullHealth;
+}
