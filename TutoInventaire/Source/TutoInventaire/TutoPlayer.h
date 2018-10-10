@@ -10,6 +10,7 @@
 #include "TutoItem.h"
 #include "Data.h"
 #include "TutoWeapon.h"
+#include "Components/TimelineComponent.h"
 /* insert include here */
 #include "TutoPlayer.generated.h"
 
