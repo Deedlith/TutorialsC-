@@ -50,7 +50,7 @@ public:
 
 	//Array of crafting
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
-		TArray<FCraft> Craft;
+		TArray<FItem> Craft;
 
 	//Array of weapon
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")

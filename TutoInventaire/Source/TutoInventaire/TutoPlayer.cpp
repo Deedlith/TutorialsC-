@@ -42,13 +42,13 @@ void ATutoPlayer::InitCraft()
 {
 	NumberMaxItem = 5;
 
-	FCraft CurrentCraft;
+	FItem CurrentCraft;
 	FRequirement CurrentRequirement;
 
-	// Kit Soin
-	CurrentCraft.ID = 0;
+	// MedKit
+	CurrentCraft.ID = 3;
 	CurrentCraft.Quantity = 0;
-	CurrentCraft.Name = "Kit Soin";
+	CurrentCraft.Name = "Med Kit";
 	CurrentRequirement.ID = 0;
 	CurrentRequirement.Quantity = 1;
 	CurrentCraft.Requirement.Add(CurrentRequirement);
@@ -57,64 +57,17 @@ void ATutoPlayer::InitCraft()
 	CurrentCraft.Requirement.Add(CurrentRequirement);
 
 	Craft.Add(CurrentCraft);
-
 	CurrentCraft.Requirement.Empty();
 
-	// Knife
-	CurrentCraft.ID = 1;
-	CurrentCraft.Quantity = 0;
-	CurrentCraft.Name = "Knife";
-	CurrentRequirement.ID = 4;
-	CurrentRequirement.Quantity = 1;
-	CurrentCraft.Requirement.Add(CurrentRequirement);
-	CurrentRequirement.ID = 5;
-	CurrentRequirement.Quantity = 1;
-	CurrentCraft.Requirement.Add(CurrentRequirement);
-	CurrentRequirement.ID = 1;
-	CurrentRequirement.Quantity = 1;
-	CurrentCraft.Requirement.Add(CurrentRequirement);
-
-	Craft.Add(CurrentCraft);
-
-	CurrentCraft.Requirement.Empty();
-
-	// Crochetage
-	CurrentCraft.ID = 2;
-	CurrentCraft.Quantity = 0;
-	CurrentCraft.Name = "Crochetage";
-	CurrentRequirement.ID = 1;
-	CurrentRequirement.Quantity = 2;
-	CurrentCraft.Requirement.Add(CurrentRequirement);
-
-	Craft.Add(CurrentCraft);
-
-	CurrentCraft.Requirement.Empty();
-
-	// Molotov
-	CurrentCraft.ID = 3;
-	CurrentCraft.Quantity = 0;
-	CurrentCraft.Name = "Molotov";
-	CurrentRequirement.ID = 2;
-	CurrentRequirement.Quantity = 1;
-	CurrentCraft.Requirement.Add(CurrentRequirement);
-	CurrentRequirement.ID = 3;
-	CurrentRequirement.Quantity = 1;
-	CurrentCraft.Requirement.Add(CurrentRequirement);
-
-	Craft.Add(CurrentCraft);
-
-	CurrentCraft.Requirement.Empty();
-
-	// Bandage
+	// Bullet
 	CurrentCraft.ID = 4;
 	CurrentCraft.Quantity = 0;
-	CurrentCraft.Name = "Bandage";
-	CurrentRequirement.ID = 3;
-	CurrentRequirement.Quantity = 2;
+	CurrentCraft.Name = "Bullet";
+	CurrentRequirement.ID = 1;
+	CurrentRequirement.Quantity = 5;
 	CurrentCraft.Requirement.Add(CurrentRequirement);
 
 	Craft.Add(CurrentCraft);
-
 	CurrentCraft.Requirement.Empty();
 }
 
@@ -492,7 +445,8 @@ bool ATutoPlayer::GetEnoughItem(int32 index)
 {
 	bool canCraft = true;
 
-	FCraft CurrentCraft = Craft[index];
+
+	FItem CurrentCraft = Craft[index];
 	for (int i = 0; i < CurrentCraft.Requirement.Num(); i++)
 	{
 		int32 NBItems = GetNumberFromID(CurrentCraft.Requirement[i].ID);

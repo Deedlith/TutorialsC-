@@ -16,40 +16,14 @@ enum class ETypeWeapon : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FItem
-{
-	GENERATED_USTRUCT_BODY()
-
-		//mettre vos variables et fonctions ici
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 ID;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FString Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 Quantity;
-
-	FItem()
-	{
-		//mettre l'initialisation des variables ici 
-		ID = -1;
-		Name = "UNKNOWN";
-		Quantity = 0;
-	}
-
-};
-
-USTRUCT(BlueprintType)
 struct FRequirement
 {
 	GENERATED_USTRUCT_BODY()
 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Requirement")
+		int32 ID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Requirement")
-	int32 ID;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Requirement")
-	int32 Quantity;
+		int32 Quantity;
 
 	FRequirement()
 	{
@@ -59,28 +33,31 @@ struct FRequirement
 };
 
 USTRUCT(BlueprintType)
-struct FCraft
+struct FItem
 {
 	GENERATED_USTRUCT_BODY()
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Craft")
-		int32 ID;
+		//mettre vos variables et fonctions ici
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int32 ID;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Craft")
-		int32 Quantity;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int32 Quantity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Craft")
 		TArray<FRequirement> Requirement;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Craft")
-		FString Name;
-
-	FCraft()
+	FItem()
 	{
+		//mettre l'initialisation des variables ici 
 		ID = -1;
-		Quantity = 1;
 		Name = "UNKNOWN";
+		Quantity = 0;
 	}
+
 };
 
 USTRUCT(BlueprintType)
