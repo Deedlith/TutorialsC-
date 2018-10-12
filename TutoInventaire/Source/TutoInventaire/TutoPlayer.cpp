@@ -338,6 +338,8 @@ void ATutoPlayer::OnUse()
 					}
 					FWeapon NewItem = weaponRaycast->info;
 					int32 TheIndex = InventoryWeapons.Add(NewItem);
+					weaponRaycast->Destroy();
+					weaponRaycast = nullptr;
 				}
 				//Item already exist, can't have the same type of weapon but get bullets
 				else
@@ -351,9 +353,6 @@ void ATutoPlayer::OnUse()
 					{
 						InventoryWeapons[index].currentBullet = nbBulletsPerType[weaponRaycast->info.typeWeapon] - InventoryWeapons[index].currentBullet;
 					}
-					
-					weaponRaycast->Destroy();
-					weaponRaycast = nullptr;
 				}
 			}
 			else
