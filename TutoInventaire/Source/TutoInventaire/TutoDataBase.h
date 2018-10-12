@@ -65,6 +65,8 @@ struct FWeapon
 {
 	GENERATED_USTRUCT_BODY()
 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+		int32 ID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	FString name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ToolTip = "time between fire (plus il est bas plus on tire vite - [0.1f, 1.0f]"))
@@ -83,6 +85,7 @@ struct FWeapon
 
 	FWeapon()
 	{
+		ID = -1;
 		name = "";
 		typeWeapon = ETypeWeapon::Pistol;
 		fireRate = 1.0f;
