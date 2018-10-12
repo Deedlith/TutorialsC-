@@ -11,7 +11,7 @@
 #include "Data.h"
 #include "TutoWeapon.h"
 #include "Components/TimelineComponent.h"
-#include "Components/BoxComponent.h"
+//#include "Components/BoxComponent.h"
 /* insert include here */
 #include "TutoPlayer.generated.h"
 

@@ -2,17 +2,17 @@
 
 #include "TutoPlayer.h"
 //#include "UnrealCPPProjectile.h"
-#include "Animation/AnimInstance.h"
-#include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Components/InputComponent.h"
-#include "GameFramework/InputSettings.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
-#include "Kismet/GameplayStatics.h"
-#include "MotionControllerComponent.h"
-#include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
-#include "Kismet/KismetMathLibrary.h"
-#include "TimerManager.h"
+//#include "Animation/AnimInstance.h"
+//#include "Camera/CameraComponent.h"
+//#include "Components/CapsuleComponent.h"
+//#include "Components/InputComponent.h"
+//#include "GameFramework/InputSettings.h"
+//#include "HeadMountedDisplayFunctionLibrary.h"
+//#include "Kismet/GameplayStatics.h"
+//#include "MotionControllerComponent.h"
+//#include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+//#include "Kismet/KismetMathLibrary.h"
+//#include "TimerManager.h"
 
 // Sets default values
 ATutoPlayer::ATutoPlayer()
@@ -42,33 +42,33 @@ void ATutoPlayer::InitCraft()
 {
 	NumberMaxItem = 5;
 
-	FItem CurrentCraft;
-	FRequirement CurrentRequirement;
+	//FItem CurrentCraft;
+	//FRequirement CurrentRequirement;
 
-	// MedKit
-	CurrentCraft.ID = 3;
-	CurrentCraft.Quantity = 0;
-	CurrentCraft.Name = "Med Kit";
-	CurrentRequirement.ID = 0;
-	CurrentRequirement.Quantity = 1;
-	CurrentCraft.Requirement.Add(CurrentRequirement);
-	CurrentRequirement.ID = 2;
-	CurrentRequirement.Quantity = 1;
-	CurrentCraft.Requirement.Add(CurrentRequirement);
+	//// MedKit
+	//CurrentCraft.ID = 3;
+	//CurrentCraft.Quantity = 0;
+	//CurrentCraft.Name = "Med Kit";
+	//CurrentRequirement.ID = 0;
+	//CurrentRequirement.Quantity = 1;
+	//CurrentCraft.Requirement.Add(CurrentRequirement);
+	//CurrentRequirement.ID = 2;
+	//CurrentRequirement.Quantity = 1;
+	//CurrentCraft.Requirement.Add(CurrentRequirement);
 
-	Craft.Add(CurrentCraft);
-	CurrentCraft.Requirement.Empty();
+	//Craft.Add(CurrentCraft);
+	//CurrentCraft.Requirement.Empty();
 
-	// Bullet
-	CurrentCraft.ID = 4;
-	CurrentCraft.Quantity = 0;
-	CurrentCraft.Name = "Bullet";
-	CurrentRequirement.ID = 1;
-	CurrentRequirement.Quantity = 5;
-	CurrentCraft.Requirement.Add(CurrentRequirement);
+	//// Bullet
+	//CurrentCraft.ID = 4;
+	//CurrentCraft.Quantity = 0;
+	//CurrentCraft.Name = "Bullet";
+	//CurrentRequirement.ID = 1;
+	//CurrentRequirement.Quantity = 5;
+	//CurrentCraft.Requirement.Add(CurrentRequirement);
 
-	Craft.Add(CurrentCraft);
-	CurrentCraft.Requirement.Empty();
+	//Craft.Add(CurrentCraft);
+	//CurrentCraft.Requirement.Empty();
 }
 
 // Called when the game starts or when spawned
