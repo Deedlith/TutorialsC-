@@ -482,6 +482,7 @@ void ATutoPlayer::CraftItem(int32 index)
 	{
 		RemoveItemWithIDAndNumber(Craft[index].Requirement[i].ID, Craft[index].Requirement[i].Quantity);
 	}
+	AddItemWithID(Craft[index].ID);
 }
 
 //Handle fire
@@ -509,7 +510,8 @@ void ATutoPlayer::Equip(ATutoWeapon* aWeapon)
 	if (currentWeapon)
 	{
 		//Detach
-		currentWeapon->DetachRootComponentFromParent();
+		currentWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		//currentWeapon->DetachRootComponentFromParent();
 		currentWeapon->SetOwner(nullptr);
 	}
 	currentWeapon = aWeapon;
