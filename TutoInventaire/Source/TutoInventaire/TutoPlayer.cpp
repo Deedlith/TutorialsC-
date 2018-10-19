@@ -265,11 +265,6 @@ void ATutoPlayer::LookUp(float value)
 	}
 }
 
-void ATutoPlayer::AddWeaponWithID(int32 id)
-{
-
-}
-
 void ATutoPlayer::OnUse()
 {
 	if (InventoryScreen)
@@ -440,7 +435,7 @@ bool ATutoPlayer::GetColorSelected(int32 index)
 
 void ATutoPlayer::RightItemInventory()
 {
-	if (InventoryScreen)
+	if (InventoryScreen && indexItemsInventory < NumberMaxInventory - 1)
 	{
 		indexItemsInventory++;
 	}

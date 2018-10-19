@@ -15,6 +15,9 @@
 /* insert include here */
 #include "TutoPlayer.generated.h"
 
+
+class ABag;
+
 UCLASS()
 class TUTOINVENTAIRE_API ATutoPlayer : public ACharacter
 {
@@ -40,7 +43,7 @@ public:
 	TArray<FItem> Inventory;
 
 	int32 NumberMaxItem = 5;
-
+	int32 NumberMaxInventory = 2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	bool InventoryScreen = false;
 
@@ -160,10 +163,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BLueprintReadWrite, Category = "Weapon")
 		ATutoWeapon* currentWeapon;
 
-	// Add an Item in the inventory with the specific ID
-	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
-		void AddWeaponWithID(int32 TheID);
-
 	//composants
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
 		UCameraComponent* camera;
@@ -231,4 +230,12 @@ public:
 	//UFUNCTION()
 	//	void ReceivePointDamage(float Damage, const UDamageType * DamageType, FVector HitLocation, FVector HitNormal, UPrimitiveComponent * HitComponent, FName BoneName, FVector ShotFromDirection, AController * InstigatedBy, AActor * DamageCauser, const FHitResult & HitInfo);
 #pragma endregion HEALTH  
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+		bool GetInventoryOpen();
+	/** The bag that the player is carrying */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bag")
+		ABag* carryingBag;
+	/** Open/Close the inventory */
+	//void Inventory();
 };
