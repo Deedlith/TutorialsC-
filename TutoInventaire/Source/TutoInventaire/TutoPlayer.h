@@ -160,6 +160,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BLueprintReadWrite, Category = "Weapon")
 		ATutoWeapon* currentWeapon;
 
+	// Add an Item in the inventory with the specific ID
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
+		void AddWeaponWithID(int32 TheID);
+
 	//composants
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
 		UCameraComponent* camera;

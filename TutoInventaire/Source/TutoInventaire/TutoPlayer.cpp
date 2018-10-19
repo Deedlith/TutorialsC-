@@ -265,6 +265,11 @@ void ATutoPlayer::LookUp(float value)
 	}
 }
 
+void ATutoPlayer::AddWeaponWithID(int32 id)
+{
+
+}
+
 void ATutoPlayer::OnUse()
 {
 	if (InventoryScreen)
@@ -337,6 +342,7 @@ void ATutoPlayer::OnUse()
 						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Add " + GetEnumAsString(weaponRaycast->info.typeWeapon)));
 					}
 					FWeapon NewItem = weaponRaycast->info;
+
 					int32 TheIndex = InventoryWeapons.Add(NewItem);
 					weaponRaycast->Destroy();
 					weaponRaycast = nullptr;
