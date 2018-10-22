@@ -16,8 +16,6 @@
 #include "TutoPlayer.generated.h"
 
 
-class ABag;
-
 UCLASS()
 class TUTOINVENTAIRE_API ATutoPlayer : public ACharacter
 {
@@ -176,6 +174,11 @@ public:
 	ATutoWeapon* weaponRaycast;
 
 	FString GetEnumAsString(ETypeWeapon EnumValue);
+
+	// Add an Item in the inventory with the specific ID
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
+		void AddWeapon(FWeapon weapon);
+
 #pragma endregion WEAPON  
 
 #pragma region HEALTH  
@@ -229,13 +232,5 @@ public:
 
 	//UFUNCTION()
 	//	void ReceivePointDamage(float Damage, const UDamageType * DamageType, FVector HitLocation, FVector HitNormal, UPrimitiveComponent * HitComponent, FName BoneName, FVector ShotFromDirection, AController * InstigatedBy, AActor * DamageCauser, const FHitResult & HitInfo);
-#pragma endregion HEALTH  
-
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-		bool GetInventoryOpen();
-	/** The bag that the player is carrying */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bag")
-		ABag* carryingBag;
-	/** Open/Close the inventory */
-	//void Inventory();
+#pragma endregion HEALTH  
 };

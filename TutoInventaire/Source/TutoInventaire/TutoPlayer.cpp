@@ -13,7 +13,6 @@
 //#include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 //#include "Kismet/KismetMathLibrary.h"
 //#include "TimerManager.h"
-
 // Sets default values
 ATutoPlayer::ATutoPlayer()
 {
@@ -338,7 +337,8 @@ void ATutoPlayer::OnUse()
 					}
 					FWeapon NewItem = weaponRaycast->info;
 
-					int32 TheIndex = InventoryWeapons.Add(NewItem);
+					this->AddWeapon(NewItem);
+					InventoryWeapons.Add(NewItem);
 					weaponRaycast->Destroy();
 					weaponRaycast = nullptr;
 				}
@@ -367,7 +367,6 @@ FString ATutoPlayer::GetEnumAsString(ETypeWeapon EnumValue)
 	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("ETypeWeapon"), true);
 	return EnumPtr->GetNameByValue((int64)EnumValue).ToString();;
 }
-
 
 bool ATutoPlayer::DoTrace(FHitResult* RV_Hit, FCollisionQueryParams* RV_TraceParams)
 {
@@ -459,7 +458,6 @@ bool ATutoPlayer::GetEnoughItem(int32 index)
 	return canCraft;
 }
 
-
 void ATutoPlayer::RemoveItemWithIDAndNumber(int32 TheID, int32 TheNumber)
 {
 	int32 Number = GetNumberFromID(TheID);
@@ -496,7 +494,6 @@ void ATutoPlayer::StopFire()
 {
 	isFiring = false;
 }
-
 
 void ATutoPlayer::Reload()
 {
